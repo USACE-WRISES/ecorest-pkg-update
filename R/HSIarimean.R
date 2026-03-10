@@ -3,7 +3,7 @@
 #' \code{HSIarimean} uses arithmetic mean to combine suitability indices into an
 #'   overarching habitat suitability index.
 #'
-#' @param x a vector of suitability indices.
+#' @param x a vector of suitability indices with values ranging from 0 to 1.
 #'
 #' @return A value of habitat quality from 0 to 1 ignoring NA values.
 #'
@@ -30,8 +30,10 @@
 #' @export
 HSIarimean <- function(x){
   HSI <- mean(x, na.rm=TRUE)
-
-  if(HSI < 0 | HSI > 1){
+  
+  if (any(x < 0 | x > 1, na.rm = TRUE)) {
+    HSIout <- "SIV inputs not within 0 to 1 range."
+  } else if(HSI < 0 | HSI > 1){
     HSIout <- "Habitat suitability index not within 0 to 1 range."
   } else {
     HSIout <- HSI
@@ -39,4 +41,5 @@ HSIarimean <- function(x){
   # Return HSI outcome
   return(HSIout)
 }
+
 
