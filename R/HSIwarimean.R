@@ -3,7 +3,7 @@
 #' \code{HSIwarimean} uses a weighted arithmetic mean to combine suitability
 #'   indices into an overarching habitat suitability index.
 #'
-#' @param x is a vector of suitability indices.
+#' @param x is a vector of suitability indices ranging from 0 to 1.
 #' @param w is a vector of weights (0 to 1 values that must sum to one).
 #'
 #' @return A value of habitat quality from 0 to 1 ignoring NA values.
@@ -43,6 +43,8 @@ HSIwarimean <- function(x, w){
     wmean <- "Number of weights does not equal number of SI values."
   } else if (sum(w, na.rm=TRUE)!= 1){
     wmean <- "Weights do not equal 1."
+  } else if (any(x < 0 | x > 1, na.rm = TRUE)) {
+    wmean <- "SIV inputs not within 0 to 1 range."
   } else if (sum(x * w, na.rm=TRUE) < 0 | sum(x * w, na.rm=TRUE) > 1){
     wmean <- "Habitat suitability index not within 0 to 1 range."
   } else {
