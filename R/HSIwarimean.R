@@ -28,7 +28,7 @@
 #' #Determine patch quality based on a vector of four, unequal-weight suitability indices.
 #' HSIwarimean(c(1, 0, 0, 0), c(0, 1, 0, 0))
 #'
-#' #Demonstrate error for mismataching inputs.
+#' #Demonstrate error for mismatching inputs.
 #' HSIwarimean(c(1, 0, 0, 0), c(0, 0, 0))
 #'
 #' #Demonstrate error for incorrect weighting.
