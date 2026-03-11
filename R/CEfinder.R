@@ -32,20 +32,24 @@
 #'
 #' @export
 CEfinder <- function(benefit, cost){
-
-  # Create empty vector to store cost-effectiveness status
-  CE <- c()
-  for(i in 1:length(benefit)){
-
-    # Isolate each restoration action with benefits larger than this action
-    bigben <- which(benefit >= benefit[i])
-
-    # Count the number of plans with larger benefits than have lower cost
-    # Store cost-effectiveness status for this action
-    # 1 = non-dominated, cost-effective and 0 = dominated, cost-ineffective
-    CE[i] <- ifelse(length(which(cost[bigben] <= cost[i]))==1, 1, 0)
+  
+  if (length(benefit) == length(cost)) {
+    # Create empty vector to store cost-effectiveness status
+    CE <- c()
+    for(i in 1:length(benefit)){
+      
+      # Isolate each restoration action with benefits larger than this action
+      bigben <- which(benefit >= benefit[i])
+      
+      # Count the number of plans with larger benefits than have lower cost
+      # Store cost-effectiveness status for this action
+      # 1 = non-dominated, cost-effective and 0 = dominated, cost-ineffective
+      CE[i] <- ifelse(length(which(cost[bigben] <= cost[i]))==1, 1, 0)
+    }
+  } else {
+    stop("Number of benefits does not equal number of costs.", call. = FALSE)
   }
-
+  
   # Return cost-effectiveness status of each restoration action
   return(CE)
 }
