@@ -7,9 +7,10 @@
 #'
 #' @import stats
 #'
-#' @param SI matrix of suitability curves ordered as parameter breakpoints and
+#' @param SI matrix or dataframe of suitability curves ordered as parameter breakpoints and
 #'   associated suitability indices for each parameter. Note that users should 
-#'   enter NA for excluded variables in HSImodels.
+#'   enter NA for excluded variables in HSImodels.Suitability curves that contain
+#'   both continuous and categorical variables should be formatted as a dataframe.
 #' @param input.proj numeric or categorical vector of application-specific input
 #'   parameters associated with the suitability curve data from SI.
 #'
