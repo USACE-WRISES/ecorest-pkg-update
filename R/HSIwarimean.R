@@ -40,13 +40,13 @@
 #' @export
 HSIwarimean <- function(x, w){
   if(length(w) != length(x)){
-    wmean <- "Number of weights does not equal number of SI values."
+    stop("Number of weights does not equal number of suitability indices.", call. = FALSE)
   } else if (sum(w, na.rm=TRUE)!= 1){
-    wmean <- "Weights do not equal 1."
+    stop("The sum of weights must be 1.", call. = FALSE)
   } else if (any(x < 0 | x > 1, na.rm = TRUE)) {
-    wmean <- "SIV inputs not within 0 to 1 range."
+    stop("Suitability indices must be between 0 and 1.", call. = FALSE)
   } else if (sum(x * w, na.rm=TRUE) < 0 | sum(x * w, na.rm=TRUE) > 1){
-    wmean <- "Habitat suitability index not within 0 to 1 range."
+    stop("Habitat suitability index not within 0 to 1 range.", call. = FALSE)
   } else {
     wmean <- sum(x * w, na.rm=TRUE)
   }
