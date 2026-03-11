@@ -35,9 +35,9 @@ HSIgeomean <- function(x){
   HSI <- prod(x, na.rm=TRUE)^(1/length(which(is.na(x)!=TRUE)))
   
   if (any(x < 0 | x > 1, na.rm = TRUE)) {
-    HSIout <- "SIV inputs not within 0 to 1 range."
+    stop("Suitability indices must be between 0 and 1.", call. = FALSE)
   } else if(HSI < 0 | HSI > 1){
-    HSIout <- "Habitat suitability index not within 0 to 1 range."
+    stop( "Habitat suitability index not within 0 to 1 range.", call. = FALSE)
   } else {
     HSIout <- HSI
   }
