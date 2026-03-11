@@ -14,8 +14,6 @@
 #'   parameters associated with the suitability curve data from SI.
 #'
 #' @return A vector of the suitability index values that match given user inputs.
-#'   Values are returned as equal to the extreme of a range if inputs are outside
-#'   of model range.
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
@@ -88,18 +86,43 @@
 SIcalc <- function(SI, input.proj){
   #Number of variables in the suitability index model
   nSI <- length(colnames(SI)) / 2
-
+  
+  #Check that all suitability indices in SI are between 0 and 1
+  even_cols <- seq(2, ncol(SI), by = 2)
+  
+  if(any(SI[, even_cols] < 0 | SI[, even_cols] > 1, na.rm = TRUE)){
+    stop("Suitability index values in SI must be between 0 and 1.", call. = FALSE)
+  }
+  
   #Identify continuous and categorical variables based on first entry of each suitability curve
   SI.cont <- c() #TRUE = continuous, FALSE = categorical
-  for(i in 1:nSI){SI.cont[i] <- is.numeric(SI[1, 2*i-1])}
+  for(i in 1:nSI){
+    SI.cont[i] <- is.numeric(SI[1, 2*i-1])
+    #For continuous variables, check that input.proj falls within the defined range of SI
+    if (all(is.na(SI[ , 2*i-1]))) {
+      next
+    } else if (SI.cont[i] == TRUE) {
+        min_SI = min(SI[, 2*i-1], na.rm = TRUE)
+        max_SI = max(SI[, 2*i-1], na.rm = TRUE)
+        if (as.numeric(input.proj[i]) < min_SI | as.numeric(input.proj[i]) > max_SI) {
+          stop("Values in input.proj must fall within the ranges provided in SI.", call. = FALSE)
+      }
+    } else if (SI.cont[i] == FALSE) {
+        min_SI = min(as.character(SI[, 2*i-1]), na.rm = TRUE)
+        max_SI = max(as.character(SI[, 2*i-1]), na.rm = TRUE)
+        if (input.proj[i] < min_SI | input.proj[i] > max_SI) {
+          stop("Values in input.proj must fall within the ranges provided in SI.", call. = FALSE)
+      }
+    }
+    }
+  
 
   #Loop over each variable and compute suitability index values for each input
   SI.out <- c()
   for(i in 1:nSI){
     #Check that the number of inputs equals the number of SI values.
     if(length(input.proj) != nSI){
-      SI.out <- "Number of inputs does not equal number of SI values."
-      break
+      stop("Number of inputs does not equal number of SI values.", call. = FALSE)
 
       #Send NA if NA or "NA" is input
     } else if(is.na(input.proj[i]) | input.proj[i]=="NA"){
