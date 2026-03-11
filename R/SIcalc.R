@@ -8,13 +8,13 @@
 #' @import stats
 #'
 #' @param SI matrix or dataframe of suitability curves ordered as parameter breakpoints and
-#'   associated suitability indices for each parameter. Note that users should 
-#'   enter NA for excluded variables in HSImodels.Suitability curves that contain
-#'   both continuous and categorical variables should be formatted as a dataframe.
+#'   associated suitability indices for each parameter. Suitability curves that contain
+#'   both continuous and categorical variables should be formatted as a dataframe rather than a matrix.
 #' @param input.proj numeric or categorical vector of application-specific input
-#'   parameters associated with the suitability curve data from SI.
+#'   parameters associated with the suitability curve data from SI. Note that users should 
+#'   enter NA for excluded variables in HSImodels.
 #'
-#' @return A vector of the suitability index values that match given user inputs.
+#' @return A vector of the suitability index values ranging from 0 to 1 that match given user inputs.
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
