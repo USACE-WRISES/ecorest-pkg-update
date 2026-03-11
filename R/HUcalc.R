@@ -43,12 +43,14 @@ HUcalc <- function(SI.out, habitat.quantity, HSIfunc,...){
   colnames(HU.out) <- c("Quality", "Quantity", "IndexUnits")
   
   if (any(SI.out < 0 | SI.out > 1, na.rm = TRUE)) {
-    HU.out <- "SI.out inputs not within 0 to 1 range."
+    stop("Suitability indices in SI.out must be between 0 and 1.", call. = FALSE)
+  } else if (habitat.quantity < 0) {
+    stop("Habitat quantity must be a positive number.", call. = FALSE)
   } else {
-    # Compute outputs
-    HU.out$Quality <- HSIfunc(SI.out,...)
-    HU.out$Quantity <- habitat.quantity
-    HU.out$IndexUnits <- HU.out$Quality * HU.out$Quantity
+      # Compute outputs
+      HU.out$Quality <- HSIfunc(SI.out,...)
+      HU.out$Quantity <- habitat.quantity
+      HU.out$IndexUnits <- HU.out$Quality * HU.out$Quantity
   }
   
   # Return habitat summary
