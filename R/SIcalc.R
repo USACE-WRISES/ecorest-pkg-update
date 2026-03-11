@@ -81,6 +81,13 @@
 #'
 #' #Set user input variables that should return (1, NA, 1)
 #' SIcalc(HSImodels$barredowl, input.demo6)
+#' 
+#' #Import juvenile Alewife suitability curves with HSImodels$alewifeJuv
+#' #Demonstrate how to enter NA for excluded variables in HSImodels
+#' 
+#' #Set user variables that should return (NA, NA, 1, 1, 0)
+#' input.demo7 <- c(NA, NA, 125, 5, 5)
+#' SIcalc(HSImodels$alewifeJuv, input.demo7)
 #'
 #' @export
 SIcalc <- function(SI, input.proj){
