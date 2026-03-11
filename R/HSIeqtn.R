@@ -10,7 +10,9 @@
 #'  name in HSImetadata.
 #' @param SIV a vector of suitability index values used in the model specified in HSImodelname.
 #' @param HSImetadata a data frame of HSI model metadata within the ecorest package.
-#' @param exclude a list of character strings specifying components to be excluded from calculations.
+#' @param exclude a vector of character strings specifying components to be excluded 
+#' from calculations. Non-NULL 'exclude' inputs are only applicable to models that explicitly
+#' provide instructions for use in the note column of HSImetadata.
 #'
 #' @return A numeric of the habitat suitability index ranging from 0 to 1.
 #'
