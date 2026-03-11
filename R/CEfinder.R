@@ -47,7 +47,7 @@ CEfinder <- function(benefit, cost){
       CE[i] <- ifelse(length(which(cost[bigben] <= cost[i]))==1, 1, 0)
     }
   } else {
-    CE = "Number of benefits does not equal number of costs."
+    stop("Number of benefits does not equal number of costs.", call. = FALSE)
   }
   
   # Return cost-effectiveness status of each restoration action
