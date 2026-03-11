@@ -5,8 +5,9 @@
 #' @import graphics
 #' @import grDevices
 #'
-#' @param SI matrix of suitability curves ordered as parameter breakpoints and
+#' @param SI matrix or dataframe of suitability curves ordered as parameter breakpoints and
 #'   associated suitability indices for each parameter with appropriate column names.
+#'   Models containing both categorical and continuous parameters must be entered as a dataframe.
 #' @param figure.name output figure file name structured as "filename.jpeg".
 #'
 #' @return A multi-panel *.jpeg figure showing all suitability curves.
@@ -34,6 +35,22 @@
 #'
 #' #Create suitability curve summary plot
 #' HSIplotter(barredowl, tempfile("BarredOwl",fileext=".jpeg"))
+#' 
+#' 
+#' #Build and define a matrix of the alewifeSAEL curves
+#' #Pardue, GB. 1983. Habitat suitability index models: alewife and blueback herring. 
+#' U.S. Dept. Int. Fish Wildl. Serv. FWS/OBS-82/10.58. 22pp.
+#' var1 = data.frame(subs.type.class = c("a", "b", "c", NA, NA, NA), 
+#'                   subs.type.class.SIV = c(1, 0.5, 0.1, NA, NA, NA))
+#' var2 = data.frame("avg.daily.wtr.temp.spwn.C" = c(5, 10, 15, 20, 27, 30), 
+#'                 "avg.daily.wtr.temp.spwn.C.SIV" = c(0, 0, 1, 1, 0, 0))
+#' alewifeSAEL = data.frame(var1, var2)
+#' 
+#' #Create suitability curve summary plot
+#' HSIplotter(alewifeSAEL, tempfile("AlewifeSAEL",fileext=".jpeg"))
+#' 
+#' #Use HSIplotter with inputs from HSImodels
+#' HSIplotter(HSImodels$barredowl, tempfile("BarredOwl",fileext=".jpeg"))
 #'
 #' @export
 HSIplotter <- function(SI, figure.name){
@@ -43,6 +60,13 @@ HSIplotter <- function(SI, figure.name){
 
   # Number of variables in the suitability index model
   nSI <- length(colnames(SI)) / 2
+  
+  # Check that all suitability indices are between 0 and 1
+  even_cols <- seq(2, ncol(SI), by = 2)
+  
+  if(any(SI[, even_cols] < 0 | SI[, even_cols] > 1, na.rm = TRUE)){
+    stop("Suitability Index values must be between 0 and 1.", call. = FALSE)
+  }
 
   #Identify continuous and categorical variables based on first entry of each suitability curve
   SI.cont <- c()
