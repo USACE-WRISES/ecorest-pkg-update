@@ -30,19 +30,48 @@
 annualizer <- function(timevec, benefits){
   # Compute general properties of the time and benefits data
   if(length(timevec) != length(benefits)){
-    benefits.avgann <- "Number of time points does not equal number of benefit values."
-
-  # Compute annualization
-  } else {
-    # Compute general properties of the time and benefits data
-    ntime <- length(timevec)
-    time.intervals <- timevec[-1] - timevec[-ntime]
-
-    # Compute the area under the curve of the ecological outcomes
-    area.rec <- time.intervals * apply(cbind(benefits[-ntime], benefits[-1]), 1, min)
-    area.tri <- 0.5 * time.intervals * abs(benefits[-ntime] - benefits[-1])
-    benefits.avgann <- sum(area.rec + area.tri) / (max(timevec) - min (timevec))
+    stop("Number of time points does not equal number of benefit values.", call. = FALSE)
   }
+  # Length check (prevents recycling) and adds mismatched length error in benefit, costs or CE
+  if (length(timevec) != length(benefits)) {
+    stop("Lengths of `timevec` and `benefits` must match.", call. = FALSE)
+  }
+  # Stop non-finite, negative, and non-numeric input values
+  if (any(!is.finite(benefits[!is.na(benefits)]))) {
+    stop("`benefits` must contain only finite numeric values.", call. = FALSE)
+  }
+  if (any(!is.finite(timevec[!is.na(timevec)]))) {
+    stop("`timevec` must contain only finite numeric values.", call. = FALSE)
+  }
+  if (any(benefits < 0, na.rm = TRUE)) {
+    stop("`benefits` must be non-negative.", call. = FALSE)
+  }
+  if (any(timevec < 0, na.rm = TRUE)) {
+    stop("`timevec` must be non-negative.", call. = FALSE)
+  }
+  if (!is.numeric(benefits) || !is.numeric(timevec)) {
+    stop("`benefit` and `timevec` must be numeric vectors.", call. = FALSE)
+  }
+  # Check for duplicated timevec
+  if (any(duplicated(timevec))) {
+    stop("Duplicate time intervals detected.", call. = FALSE)
+  }
+  # Sort timevec if out of order
+  if (!identical(timevec, sort(timevec))) {
+    warning("Time intervals in `timevec` have been sorted from smallest to largest. 
+      Please ensure that corresponding benefits have been entered correctly.", call. = FALSE)
+    timevec = sort(timevec)
+  }
+  # Compute annualization
+  # Compute general properties of the time and benefits data
+  ntime <- length(timevec)
+  time.intervals <- timevec[-1] - timevec[-ntime]
+
+  # Compute the area under the curve of the ecological outcomes
+  area.rec <- time.intervals * apply(cbind(benefits[-ntime], benefits[-1]), 1, min)
+  area.tri <- 0.5 * time.intervals * abs(benefits[-ntime] - benefits[-1])
+  benefits.avgann <- sum(area.rec + area.tri) / (max(timevec) - min (timevec))
+
   # Return annualized outcomes
   return(benefits.avgann)
 }
