@@ -61,6 +61,11 @@ HSIplotter <- function(SI, figure.name){
   # Number of variables in the suitability index model
   nSI <- length(colnames(SI)) / 2
   
+  # Check that no columns contain invalid values
+  if (any(is.infinite(SI))) {
+    stop("Suitability Index values cannot be infinite", call. = FALSE)
+  }
+  
   # Check that all suitability indices are between 0 and 1
   even_cols <- seq(2, ncol(SI), by = 2)
   
