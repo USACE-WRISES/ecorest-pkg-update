@@ -44,7 +44,7 @@ HUcalc <- function(SI.out, habitat.quantity, HSIfunc,...){
   
   if (any(SI.out < 0 | SI.out > 1, na.rm = TRUE)) {
     stop("Suitability indices in SI.out must be between 0 and 1.", call. = FALSE)
-  } else if (habitat.quantity < 0) {
+  } else if (habitat.quantity < 0 | !is.numeric(habitat.quantity) | is.infinite(habitat.quantity)) {
     stop("Habitat quantity must be a positive number.", call. = FALSE)
   } else {
       # Compute outputs
