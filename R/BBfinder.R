@@ -60,6 +60,9 @@ BBfinder <- function(benefit, cost, CE){
   if (!is.numeric(benefit) || !is.numeric(cost) || !is.numeric(CE)) {
     stop("`benefit`, `cost`, and `CE` must be numeric vectors.", call. = FALSE)
   }
+  if (any(is.na(cost)) || any(is.na(benefit)) || any(is.na(CE))) {
+    stop("`benefit`, `cost`, and `CE` cannot be NA.", call. = FALSE)
+  }
   # Isolate cost-effective actions
   ben.CE <- benefit[which(CE==1)]
   cost.CE <- cost[which(CE==1)]
