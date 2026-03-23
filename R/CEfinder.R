@@ -33,7 +33,7 @@
 #' @export
 CEfinder <- function(benefit, cost){
   
-  # Stop non-finite, negative, and non-numeric input values
+  # Stop non-finite, negative, NA, and non-numeric input values
   if (any(!is.finite(benefit[!is.na(benefit)]))) {
     stop("`benefit` must contain only finite numeric values.", call. = FALSE)
   }
@@ -49,8 +49,12 @@ CEfinder <- function(benefit, cost){
   if (!is.numeric(benefit) || !is.numeric(cost)) {
     stop("`benefit` and `cost` must be numeric vectors.", call. = FALSE)
   }
+  if (any(is.na(cost)) || any(is.na(benefit))) {
+    stop("`benefit` and `cost` cannot be NA.")
+  }
   # Stop if benefit and cost vectors are of unequal length
-  if (sum(!is.na(benefit)) == sum(!is.na(cost))) {
+  if (length(benefit) == length(cost)) {
+
     # Create empty vector to store cost-effectiveness status
     CE <- c()
     for(i in 1:length(benefit)){
