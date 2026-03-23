@@ -32,7 +32,7 @@ HSIarimean <- function(x){
   HSI <- mean(x, na.rm=TRUE)
   
   if (any(x < 0 | x > 1, na.rm = TRUE)) {
-    stop("Suitability indices must be between 0 and 1.", call.  = FALSE)
+    stop("Suitability indices must be between 0 and 1.", call. = FALSE)
   } else if(HSI < 0 | HSI > 1){
     stop("Habitat suitability index not within 0 to 1 range.", call. = FALSE)
   } else {
