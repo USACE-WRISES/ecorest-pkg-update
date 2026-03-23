@@ -98,8 +98,13 @@ SIcalc <- function(SI, input.proj){
   #Check that all suitability indices in SI are between 0 and 1
   even_cols <- seq(2, ncol(SI), by = 2)
   
+  # Check for invalid inputs < 0 or > 1
   if(any(SI[, even_cols] < 0 | SI[, even_cols] > 1, na.rm = TRUE)){
     stop("Suitability index values in SI must be between 0 and 1.", call. = FALSE)
+  }
+  # Check for infinite inputs
+  if (any(sapply(input.proj, is.infinite) | "Inf" %in% input.proj)) {
+    stop("input.proj contains infinite values (Inf or -Inf), which are not allowed.", call. = FALSE)
   }
   
   #Identify continuous and categorical variables based on first entry of each suitability curve
