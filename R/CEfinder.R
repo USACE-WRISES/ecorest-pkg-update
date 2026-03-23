@@ -50,7 +50,7 @@ CEfinder <- function(benefit, cost){
     stop("`benefit` and `cost` must be numeric vectors.", call. = FALSE)
   }
   if (any(is.na(cost)) || any(is.na(benefit))) {
-    stop("`benefit` and `cost` cannot be NA.", call = FALSE)
+    stop("`benefit` and `cost` cannot be NA.", call. = FALSE)
   }
   # Stop if benefit and cost vectors are of unequal length
   if (length(benefit) == length(cost)) {
