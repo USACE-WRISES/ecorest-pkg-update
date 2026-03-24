@@ -45,10 +45,12 @@ HSIwarimean <- function(x, w){
     stop("The sum of weights must be 1.", call. = FALSE)
   } else if (any(x < 0 | x > 1, na.rm = TRUE)) {
     stop("Suitability indices must be between 0 and 1.", call. = FALSE)
-  } else if (sum(x * w, na.rm=TRUE) < 0 | sum(x * w, na.rm=TRUE) > 1){
-    stop("Habitat suitability index not within 0 to 1 range.", call. = FALSE)
-  } else {
+  }  else {
     wmean <- sum(x * w, na.rm=TRUE)
   }
+  if (wmean < 0 | wmean > 1){
+    stop("Habitat suitability index not within 0 to 1 range.", call. = FALSE)
+  }
+  
   return(wmean)
 }
