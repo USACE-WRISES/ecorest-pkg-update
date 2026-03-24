@@ -57,6 +57,9 @@ BBfinder <- function(benefit, cost, CE){
   if (any(cost < 0, na.rm = TRUE)) {
     stop("`cost` must be non-negative.", call. = FALSE)
   }
+  if (any(!CE %in% c(0,1), na.rm = TRUE)) {
+    stop("`cost` must be non-negative.", call. = FALSE)
+  }
   if (!is.numeric(benefit) || !is.numeric(cost) || !is.numeric(CE)) {
     stop("`benefit`, `cost`, and `CE` must be numeric vectors.", call. = FALSE)
   }
