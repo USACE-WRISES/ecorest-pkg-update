@@ -3,7 +3,7 @@
 #' \code{HSIgeomen} uses geometric mean to combine suitability indices into an
 #'   overarching habitat suitability index.
 #'
-#' @param x a vector of suitability indices
+#' @param x a vector of suitability indices with values ranging from 0 to 1.
 #'
 #' @return A value of habitat quality from 0 to 1 ignoring NA values.
 #'
@@ -33,13 +33,15 @@
 #' @export
 HSIgeomean <- function(x){
   HSI <- prod(x, na.rm=TRUE)^(1/length(which(is.na(x)!=TRUE)))
-
-  if(HSI < 0 | HSI > 1){
-    HSIout <- "Habitat suitability index not within 0 to 1 range."
+  
+  if (any(x < 0 | x > 1, na.rm = TRUE)) {
+    stop("Suitability indices must be between 0 and 1.", call. = FALSE)
+  } else if(HSI < 0 | HSI > 1){
+    stop( "Habitat suitability index not within 0 to 1 range.", call. = FALSE)
   } else {
     HSIout <- HSI
   }
-
+  
   # Return HSI outcome
   return(HSIout)
 }
