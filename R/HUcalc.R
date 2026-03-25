@@ -3,11 +3,13 @@
 #' \code{HUcalc} computes habitat units given a set of suitability indices,
 #'  a habitat suitability index equation, and habitat quantity.
 #'
-#' @param SI.out is a vector of application-specific suitability indices,
-#'   which can be produced from SIcalc.
+#' @param SI.out is a vector of application-specific suitability indices between
+#'   0 and 1, which can be produced from SIcalc.
 #' @param habitat.quantity is a numeric of habitat size associated with these
 #'   suitability indices (i.e., length, area, or volume).
-#' @param HSIfunc is a function for combination of the suitability indices.
+#' @param HSIfunc is a function used to combine suitability indices into a 
+#' composite habitat suitability index (HSI score) (e.g., ecorest functions 
+#' like HSIarimean or HSIgeomean or functions outside ecorest like max or mean)
 #' @param ... optional arguments to HSIfunc.
 #'
 #' @return A vector of habitat quality, habitat quantity, and index
@@ -41,12 +43,18 @@ HUcalc <- function(SI.out, habitat.quantity, HSIfunc,...){
   # Create an empty vector to store outputs
   HU.out <- as.data.frame(matrix(NA,nrow=1,ncol=3))
   colnames(HU.out) <- c("Quality", "Quantity", "IndexUnits")
-
-  # Compute outputs
-  HU.out$Quality <- HSIfunc(SI.out,...)
-  HU.out$Quantity <- habitat.quantity
-  HU.out$IndexUnits <- HU.out$Quality * HU.out$Quantity
-
+  
+  if (any(SI.out < 0 | SI.out > 1, na.rm = TRUE)) {
+    stop("Suitability indices in SI.out must be between 0 and 1.", call. = FALSE)
+  } else if (habitat.quantity < 0 | !is.numeric(habitat.quantity) | is.infinite(habitat.quantity)) {
+    stop("Habitat quantity must be a positive number.", call. = FALSE)
+  } else {
+      # Compute outputs
+      HU.out$Quality <- HSIfunc(SI.out,...)
+      HU.out$Quantity <- habitat.quantity
+      HU.out$IndexUnits <- HU.out$Quality * HU.out$Quantity
+  }
+  
   # Return habitat summary
   return(HU.out)
 }
