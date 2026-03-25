@@ -7,7 +7,9 @@
 #'   0 and 1, which can be produced from SIcalc.
 #' @param habitat.quantity is a numeric of habitat size associated with these
 #'   suitability indices (i.e., length, area, or volume).
-#' @param HSIfunc is a function for combination of the suitability indices.
+#' @param HSIfunc is a function used to combine suitability indices into a 
+#' composite habitat suitability index (HSI score) (e.g., ecorest functions 
+#' like HSIarimean or HSIgeomean or functions outside ecorest like max or mean)
 #' @param ... optional arguments to HSIfunc.
 #'
 #' @return A vector of habitat quality, habitat quantity, and index
