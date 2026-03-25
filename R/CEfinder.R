@@ -34,7 +34,7 @@
 CEfinder <- function(benefit, cost){
   
   # Stop non-finite, negative, NA, and non-numeric input values
-  if (any(!is.finite(benefit[!is.na(benefit)]))) {
+  if (any(is.infinite(benefit))) {
     stop("`benefit` must contain only finite numeric values.", call. = FALSE)
   }
   if (any(!is.finite(cost[!is.na(cost)]))) {
