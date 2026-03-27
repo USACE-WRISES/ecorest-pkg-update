@@ -56,11 +56,13 @@ annualizer <- function(timevec, benefits){
   if (any(duplicated(timevec))) {
     stop("Duplicate time intervals detected.", call. = FALSE)
   }
-  # Sort timevec if out of order
+  # Sort timevec and benefits if timevec out of order
   if (!identical(timevec, sort(timevec))) {
-    warning("Time intervals in `timevec` have been sorted from smallest to largest. 
-      Please ensure that corresponding benefits have been entered correctly.", call. = FALSE)
-    timevec = sort(timevec)
+    ord <- order(timevec)
+    warning("`timevec` was not in ascending order, so `timevec` and `benefits` were reordered together by time.", call. = FALSE)
+    timevec <- timevec[ord]
+    benefits <- benefits[ord]
+}
   }
   # Compute annualization
   # Compute general properties of the time and benefits data
