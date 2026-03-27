@@ -8,9 +8,12 @@
 #'
 #' @param HSImodelname a character string in quotations that must match an existing model
 #'  name in HSImetadata.
-#' @param SIV a vector of suitability index values used in the model specified in HSImodelname.
+#' @param SIV a vector of suitability index values ranging from 0 to 1 used in the model 
+#' specified in HSImodelname.
 #' @param HSImetadata a data frame of HSI model metadata within the ecorest package.
-#' @param exclude a list of character strings specifying components to be excluded from calculations.
+#' @param exclude a vector of character strings specifying components to be excluded 
+#' from calculations. Non-NULL 'exclude' inputs are only applicable to models that explicitly
+#' provide instructions for use in the note column of HSImetadata.
 #'
 #' @return A numeric of the habitat suitability index ranging from 0 to 1.
 #'
@@ -69,6 +72,11 @@
 #'
 #' @export
 HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
+  # Throw error if SIV inputs are not between zero and one
+  if (any(SIV < 0 | SIV > 1, na.rm = TRUE)) {
+    stop("Suitability index values (SIVs) must be between 0 and 1.", call. = FALSE)
+  }
+  
   # Find the location of the model in HSImetadata
     model.loc <- which(HSImetadata$model == HSImodelname)
 
@@ -203,9 +211,11 @@ HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
   # Set error message for incorrect SIV length or NA input
   # Changed length(SIV.model) to length(SIV.name.gen)
     if(length(SIV.name.gen) != length(SIV)){
-      HSI.out4 <- "SIV vector length does not match equation."
+      stop("SIV length does not match expected number of inputs.", call. = FALSE)
+    } else if (!is.numeric(HSI.out3$Eqtn)) {
+        stop("Invalid HSI score. Please check SIV inputs.", call. = FALSE)
     } else {
-      HSI.out4 <- ifelse(is.numeric(HSI.out3$Eqtn),HSI.out3$Eqtn,"NA with possible SIV input error.")
+      HSI.out4 <- HSI.out3$Eqtn
     }
 
   # Return HSI outcome
