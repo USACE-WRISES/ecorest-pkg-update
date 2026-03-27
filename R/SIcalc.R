@@ -122,10 +122,10 @@ SIcalc <- function(SI, input.proj){
           stop("Values in input.proj must fall within the ranges provided in SI.", call. = FALSE)
       }
     } else if (SI.cont[i] == FALSE) {
-        min_SI = min(as.character(SI[, 2*i-1]), na.rm = TRUE)
-        max_SI = max(as.character(SI[, 2*i-1]), na.rm = TRUE)
-        if (input.proj[i] < min_SI | input.proj[i] > max_SI) {
-          stop("Values in input.proj must fall within the ranges provided in SI.", call. = FALSE)
+      allowed <- unique(as.character(SI[, 2*i-1]))
+      allowed <- allowed[!is.na(allowed)]
+      if (!(as.character(input.proj[i]) %in% allowed)) {
+        stop("Values in input.proj must fall within the ranges provided in SI.", call. = FALSE)
       }
     }
     }
