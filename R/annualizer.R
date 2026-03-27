@@ -62,7 +62,6 @@ annualizer <- function(timevec, benefits){
     warning("`timevec` was not in ascending order, so `timevec` and `benefits` were reordered together by time.", call. = FALSE)
     timevec <- timevec[ord]
     benefits <- benefits[ord]
-}
   }
   # Compute annualization
   # Compute general properties of the time and benefits data
