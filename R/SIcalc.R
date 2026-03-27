@@ -102,8 +102,9 @@ SIcalc <- function(SI, input.proj){
   if(any(SI[, even_cols] < 0 | SI[, even_cols] > 1, na.rm = TRUE)){
     stop("Suitability index values in SI must be between 0 and 1.", call. = FALSE)
   }
-  # Check for infinite inputs
-  if (any(sapply(input.proj, is.infinite) | "Inf" %in% input.proj)) {
+    # Check for infinite inputs (numeric +/-Inf and character "Inf"/"-Inf")
+  if (any(is.infinite(input.proj), na.rm = TRUE) ||
+      any(as.character(input.proj) %in% c("Inf", "-Inf"), na.rm = TRUE)) {
     stop("input.proj contains infinite values (Inf or -Inf), which are not allowed.", call. = FALSE)
   }
   
