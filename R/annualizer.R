@@ -3,7 +3,7 @@
 #' \code{annualizer} computes time-averaged quantities based on linear interpolation.
 #'
 #' @param timevec numeric vector of time intervals.
-#' @param benefits numeric vector of values to be interpolated.
+#' @param benefits numeric vector of ecological output values for a single condition (e.g., future with project) to be interpolated.
 #'
 #' @return A time-averaged value over the specified time horizon.
 #'
