@@ -39,7 +39,7 @@
 #' 
 #' #Build and define a matrix of the alewifeSAEL curves
 #' #Pardue, GB. 1983. Habitat suitability index models: alewife and blueback herring. 
-#' U.S. Dept. Int. Fish Wildl. Serv. FWS/OBS-82/10.58. 22pp.
+#' #U.S. Dept. Int. Fish Wildl. Serv. FWS/OBS-82/10.58. 22pp.
 #' var1 = data.frame(subs.type.class = c("a", "b", "c", NA, NA, NA), 
 #'                   subs.type.class.SIV = c(1, 0.5, 0.1, NA, NA, NA))
 #' var2 = data.frame("avg.daily.wtr.temp.spwn.C" = c(5, 10, 15, 20, 27, 30), 
