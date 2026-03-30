@@ -38,8 +38,6 @@
 #' HSIeqtn("barredowl", c(1,1,1), HSImetadata) #c(1,1,1) should result in 1.00
 #' HSIeqtn("barredowl", c(0.5,1,1), HSImetadata) #c(0.5,1,1) should result in 0.707
 #' HSIeqtn("barredowl", c(0,1,1), HSImetadata) #c(0,1,1) should result in 0.00
-#' HSIeqtn("barredowl", c(0,NA,1), HSImetadata) #c(0,NA,1) should return error message
-#' HSIeqtn("barredowl", c(NA,1,1,1), HSImetadata) #c(NA,1,1,1) should return error message
 #'
 #' #Compute patch quality for the Juvenile Alewife model (two components)
 #' #Pardue, G.B. 1983. Habitat Suitability index models: alewife and blueback herring.
@@ -49,8 +47,6 @@
 #' HSIeqtn("alewifeJuv", c(1,1,1), HSImetadata) #c(1,1,1) should result in 1.00
 #' HSIeqtn("alewifeJuv", c(0.5,1,1), HSImetadata) #c(0.5,1,1) should result in 0.50
 #' HSIeqtn("alewifeJuv", c(0,1,1), HSImetadata) #c(0,1,1) should result in 0.00
-#' HSIeqtn("alewifeJuv", c(1,NA,1), HSImetadata) #c(1,NA,1) returns error message
-#' HSIeqtn("alewifeJuv", c(1,1,1,NA), HSImetadata) #c(1,1,1,NA) returns error message
 #'
 #' #Compute patch quality for Cutthroat trout model for lacustrine habitats (7 components)
 #' #with spawning and lacustrine habitat and with only lacustrine habitat (i.e., 

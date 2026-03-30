@@ -53,14 +53,6 @@
 #' input.demo4 <- c(0, 12.5, 40)
 #' SIcalc(barredowl, input.demo4)
 #'
-#' #Set user input variables that should return (1, 1, 1)
-#' input.demo5 <- c(4, 40, 60)
-#' SIcalc(barredowl, input.demo5)
-#'
-#' #Set user input variables that should return (1, NA, 1)
-#' input.demo6 <- c(4, NA, 60)
-#' SIcalc(barredowl, input.demo6)
-#'
 #' #Suitability curves may also be drawn from HSImodels (data within ecorest)
 #' #Import Barred Owl suitability curves with HSImodels$barredowl
 #' #The input examples are repeated from above
@@ -77,11 +69,6 @@
 #' #Set user input variables that should return (0.1, 0.5, 0.5)
 #' SIcalc(HSImodels$barredowl, input.demo4)
 #'
-#' #Set user input variables that should return (1, 1, 1)
-#' SIcalc(HSImodels$barredowl, input.demo5)
-#'
-#' #Set user input variables that should return (1, NA, 1)
-#' SIcalc(HSImodels$barredowl, input.demo6)
 #' 
 #' #Import juvenile Alewife suitability curves with HSImodels$alewifeJuv
 #' #Demonstrate how to enter NA for excluded variables in HSImodels

@@ -28,15 +28,6 @@
 #' #Determine patch quality based on a vector of four, unequal-weight suitability indices.
 #' HSIwarimean(c(1, 0, 0, 0), c(0, 1, 0, 0))
 #'
-#' #Demonstrate error for mismatching inputs.
-#' HSIwarimean(c(1, 0, 0, 0), c(0, 0, 0))
-#'
-#' #Demonstrate error for incorrect weighting.
-#' HSIwarimean(c(1, 0, 0, 0), c(1, 1, 0, 0))
-#'
-#' #Demonstrate error for out of range output.
-#' HSIwarimean(c(1, 1, 1, 10), c(0.2, 0.3, 0.3, 0.2))
-#'
 #' @export
 HSIwarimean <- function(x, w){
   if(length(w) != length(x)){

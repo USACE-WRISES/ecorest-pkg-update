@@ -24,9 +24,6 @@
 #' #Determine patch quality based on a vector of suitability indices with an NA.
 #' HSIarimean(c(0.25, 0.25, NA, 0.25))
 #'
-#' #Demonstrate error message associated with out of range outcomes.
-#' HSIarimean(c(0.25, 0.25, 10.00, 0.25))
-#'
 #' @export
 HSIarimean <- function(x){
   HSI <- mean(x, na.rm=TRUE)

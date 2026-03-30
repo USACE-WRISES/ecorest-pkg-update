@@ -27,9 +27,6 @@
 #' #Determine patch quality based on a vector of suitability indices with a zero-value.
 #' HSIgeomean(c(0.25, 0.25, 0.0, 0.25))
 #'
-#' #Demonstrate error message associated with out of range outcomes.
-#' HSIgeomean(c(2, 2, NA, 3))
-#'
 #' @export
 HSIgeomean <- function(x){
   HSI <- prod(x, na.rm=TRUE)^(1/length(which(is.na(x)!=TRUE)))

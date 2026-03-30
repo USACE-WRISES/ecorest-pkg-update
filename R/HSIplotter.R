@@ -5,7 +5,7 @@
 #' @import graphics
 #' @import grDevices
 #'
-#' @param SI matrix or dataframe of suitability curves ordered as parameter breakpoints and
+#' @param SI list, matrix, or dataframe of suitability curves ordered as parameter breakpoints and
 #'   associated suitability indices for each parameter with appropriate column names.
 #'   Models containing both categorical and continuous parameters must be entered as a dataframe.
 #' @param figure.name output figure file name structured as "filename.jpeg".
@@ -62,7 +62,9 @@ HSIplotter <- function(SI, figure.name){
   nSI <- length(colnames(SI)) / 2
   
   # Check that no columns contain invalid values
-  if (any(is.infinite(SI))) {
+  if (any(unlist(lapply(SI, function(x) {
+    if (is.numeric(x)) is.infinite(x) else FALSE
+  })))) {
     stop("Suitability Index values cannot be infinite", call. = FALSE)
   }
   

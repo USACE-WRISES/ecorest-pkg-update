@@ -24,9 +24,6 @@
 #' #Determine patch quality based on a vector of suitability indices with an NA.
 #' HSImin(c(0.1, 0.25, NA, 0.25))
 #'
-#' #Demonstrate error message associated with out of range outcomes.
-#' HSImin(c(2, 4, NA, 3))
-#'
 #' @export
 HSImin <- function(x){
   HSI <- min(x, na.rm=TRUE)
