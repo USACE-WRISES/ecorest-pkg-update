@@ -1,7 +1,10 @@
 #' Computes Habitat Quality, Quantity, and Units
 #'
 #' \code{HUcalc} computes habitat units given a set of suitability indices,
-#'  a habitat suitability index equation, and habitat quantity.
+#'  a habitat suitability index equation, and habitat quantity. Note that U.S. 
+#'  Army Corps of Engineers users applying HUcalc must have approval from the 
+#'  National Ecosystem Planning Center of Expertise (Eco-PCX) prior to 
+#'  development or application of a new model.
 #'
 #' @param SI.out is a vector of application-specific suitability indices between
 #'   0 and 1, which can be produced from SIcalc.
@@ -37,9 +40,17 @@
 #' #HSIfunc can also represent functions outside of the ecorest package
 #' HUcalc(c(0.1,1), 100, mean)
 #' HUcalc(c(0.1,1), 100, max)
+#' 
+#' #Summarize habitat outcomes based on a data frame of two suitability indices
+#' SI.out = data.frame(SI = c(0.1, 0.4, 0.5))
+#' HUcalc(SI.out, 10, HSImin)
 #'
 #' @export
 HUcalc <- function(SI.out, habitat.quantity, HSIfunc,...){
+    warning("U.S. Army Corps of Engineers users must have approval from the National Ecosystem 
+  Planning Center of Expertise (Eco-PCX) prior to development or application of a new model.")
+  
+  
   # Create an empty vector to store outputs
   HU.out <- as.data.frame(matrix(NA,nrow=1,ncol=3))
   colnames(HU.out) <- c("Quality", "Quantity", "IndexUnits")
