@@ -1,14 +1,14 @@
 #' Computes Habitat Suitability Index with Arithmetic Mean
 #'
-#' \code{HSIarimean} uses arithmetic mean to combine suitability indices into an
+#' \code{HSIarimean} uses an arithmetic mean to combine suitability indices into an
 #'   overarching habitat suitability index. Note that U.S. Army Corps of 
 #'   Engineers users applying the HSIarimean function must have approval from the 
 #'   National Ecosystem Planning Center of Expertise (Eco-PCX) prior to 
 #'   development or application of a new model.
 #'
-#' @param x a vector of suitability indices with values ranging from 0 to 1.
+#' @param x a vector, matrix, or data frame of suitability indices with values ranging from 0 to 1.
 #'
-#' @return A value of habitat quality from 0 to 1 ignoring NA values.
+#' @return A value of habitat quality ranging from 0 to 1 (ignoring NA values).
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
