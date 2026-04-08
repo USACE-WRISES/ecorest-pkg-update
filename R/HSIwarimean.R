@@ -42,7 +42,7 @@ HSIwarimean <- function(x, w){
   or weighting system.")
   
   HSI <- mean(as.matrix(x), na.rm=TRUE)
-  if(length(w) != length(x)){
+  if(length(as.matrix(w)) != length(as.matrix(x))){
     stop("Number of weights does not equal number of suitability indices.", call. = FALSE)
   } else if (sum(w, na.rm=TRUE)!= 1){
     stop("The sum of weights must be 1.", call. = FALSE)
