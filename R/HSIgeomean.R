@@ -1,7 +1,10 @@
 #' Habitat Suitability Index with Geometric Mean
 #'
-#' \code{HSIgeomen} uses geometric mean to combine suitability indices into an
-#'   overarching habitat suitability index.
+#' \code{HSIgeomean} uses a geometric mean to combine suitability indices into an
+#'   overarching habitat suitability index. Note that U.S. Army Corps of 
+#'   Engineers users applying the HSIgeomean function must have approval from 
+#'   the National Ecosystem Planning Center of Expertise (Eco-PCX) prior to 
+#'   development or application of a new model.
 #'
 #' @param x a vector of suitability indices with values ranging from 0 to 1.
 #'
@@ -26,9 +29,16 @@
 #'
 #' #Determine patch quality based on a vector of suitability indices with a zero-value.
 #' HSIgeomean(c(0.25, 0.25, 0.0, 0.25))
+#' 
+#' #Determine patch quality based on a dataframe of suitability indices
+#' x = data.frame(0.25, 0.25, 0.25, 0.25)
+#' colnames(x) = c("var1", "var2", "var3", "var4")
+#' HSIgeomean(x)
 #'
 #' @export
 HSIgeomean <- function(x){
+  warning("U.S. Army Corps of Engineers users must have approval from the National Ecosystem 
+  Planning Center of Expertise (Eco-PCX) prior to development or application of a new model.")
   HSI <- prod(x, na.rm=TRUE)^(1/length(which(is.na(x)!=TRUE)))
   
   if (any(x < 0 | x > 1, na.rm = TRUE)) {
