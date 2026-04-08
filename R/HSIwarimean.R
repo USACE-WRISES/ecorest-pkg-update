@@ -6,8 +6,8 @@
 #'   approval from the National Ecosystem Planning Center of Expertise (Eco-PCX) 
 #'   prior to development or application of a new model or weighting system.
 #'
-#' @param x is a vector or data frame of suitability indices ranging from 0 to 1.
-#' @param w is a vector or data frame of weights ranging from 0 to 1 that must sum to one.
+#' @param x is a vector, matrix, or data frame of suitability indices ranging from 0 to 1.
+#' @param w is a vector, matrix, or data frame of weights ranging from 0 to 1 that must sum to one.
 #'
 #' @return A value of habitat quality ranging from 0 to 1 (ignoring NA values).
 #'
