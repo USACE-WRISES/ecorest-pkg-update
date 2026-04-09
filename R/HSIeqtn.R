@@ -10,8 +10,8 @@
 #'
 #' @param HSImodelname a character string in quotations that must match an existing model
 #'  name in HSImetadata.
-#' @param SIV a vector of suitability index values ranging from 0 to 1 used in the model 
-#' specified in HSImodelname.
+#' @param SIV a vector, dataframe, or matrix of suitability index values ranging 
+#' from 0 to 1 used in the model specified in HSImodelname.
 #' @param HSImetadata a data frame of HSI model metadata within the ecorest package.
 #' @param exclude a vector of character strings specifying components to be excluded 
 #' from calculations. Non-NULL 'exclude' inputs are only applicable to models that explicitly
@@ -70,9 +70,16 @@
 #'
 #' @export
 HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
-  # Convert SIV to matrix
-  SIV = as.matrix(SIV)
-  # Throw error if SIV inputs are not between zero and one
+  
+  # Convert SIV to vector
+  SIV = unlist(SIV)
+  
+  # Test whether SIV inputs are valid
+  if (any(is.infinite(SIV) | !is.numeric(SIV))) {
+    stop("Non-NA SIV inputs must be finite numeric values.")
+  }
+  
+  # Test whether SIV inputs are between zero and one
   if (any(SIV < 0 | SIV > 1, na.rm = TRUE)) {
     stop("Suitability index values (SIVs) must be between 0 and 1.", call. = FALSE)
   }
@@ -149,7 +156,7 @@ HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
     }
 
   # Populate the list with input suitability index values
-    for(i in 1:length(SIV)){HSI[[i]] <- SIV[i, 1]}
+    for(i in 1:length(SIV)){HSI[[i]] <- SIV[i]}
 
   # Create a list for outputs with the same structure and headings
     HSI.out <- HSI
