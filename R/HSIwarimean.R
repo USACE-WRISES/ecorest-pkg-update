@@ -41,18 +41,39 @@ HSIwarimean <- function(x, w){
   Planning Center of Expertise (Eco-PCX) prior to development or application of a new model
   or weighting system.")
   
-  HSI <- mean(as.matrix(x), na.rm=TRUE)
-  if(length(as.matrix(w)) != length(as.matrix(x))){
-    stop("Number of weights does not equal number of suitability indices.", call. = FALSE)
-  } else if (sum(w, na.rm=TRUE)!= 1){
-    stop("The sum of weights must be 1.", call. = FALSE)
-  } else if (any(x < 0 | x > 1, na.rm = TRUE)) {
+  # Convert all inputs to vectors
+  x = as.numeric(unlist(x))
+  w = as.numeric(unlist(w))
+  
+  # Test whether x and w are the same length
+  if(sum(!is.na(x)) != sum(!is.na(w))){
+    stop("Number of non-NA weights does not equal number of non-NA suitability indices.", call. = FALSE)
+  } 
+  
+  # Test whether x inputs are valid
+  if (any(x < 0 | x > 1, na.rm = TRUE)) {
     stop("Suitability indices must be between 0 and 1.", call. = FALSE)
-  }  else {
-    wmean <- sum(x * w, na.rm=TRUE)
   }
+  # Test whether x and w are valid
+  if (any(is.infinite(x) | is.infinite(w))) {
+    stop("Non-NA inputs must be finite numeric values.")
+  }
+  
+  # Test whether weights are negative
+  if(any(w < 0, na.rm = TRUE)){
+    stop("Weights cannot be negative.", call. = FALSE)
+  }
+  
+  # Test whether weights sum to 1
+  if(abs(sum(w, na.rm = T) - 1) > 1e-8){
+    stop("The sum of non-NA weights must equal 1.", call. = FALSE)
+  } 
+  
+  # Calculate the weighted arithmetic mean
+  wmean <- sum(x * w, na.rm=TRUE)
+
   if (wmean < 0 | wmean > 1){
-    stop("Habitat suitability index not within 0 to 1 range.", call. = FALSE)
+    stop("Habitat suitability index is not numeric or is not within 0 to 1 range.", call. = FALSE)
   }
   
   return(wmean)
