@@ -7,18 +7,18 @@
 #' @import viridis
 #'
 #' @param altnames vector of numerics or characters as unique restoration action identifiers.
-#' @param benefit a vector of restoration benefits. Typically, these are time-averaged
+#' @param benefit a vector, matrix, or data frame of restoration benefits. Typically, these are time-averaged
 #'   ecological outcomes (e.g., average annual habitat units). Often project benefits
 #'   are best presented as the "lift" associated with a restoration action
 #'   (i.e., the benefits of an alternative minus the benefits of a "no action" plan).
-#' @param cost a vector of restoration costs. Typically, these are monetary costs
+#' @param cost a vector, matrix, or data frame of restoration costs. Typically, these are monetary costs
 #'   associated with a given restoration action such as project first cost or
 #'   annualized economic cost. Notably, these functions are agnostic to units, so costs
 #'   could also be non-monetary such as lost political capital or social costs
 #'   of each alternative.
-#' @param CE numeric vector of 0's and 1's indicating whether a plan is cost-effective (1)
+#' @param CE a numeric vector, matrix, or data frame of 0's and 1's indicating whether a plan is cost-effective (1)
 #'   or non-cost-effective (0). Can be derived from ecorest::CEfinder.
-#' @param BB numeric vector of 0's and 1's indicating whether a plan is a best buy (1)
+#' @param BB a numeric vector, matrix, or data frame of 0's and 1's indicating whether a plan is a best buy (1)
 #'   or not (0). Can be derived from ecorest::BBfinder.
 #' @param figure.name output figure file name structured as "filename.jpeg".
 #'
@@ -42,6 +42,14 @@
 #'
 #' @export
 CEICAplotter <- function(altnames, benefit, cost, CE, BB, figure.name){
+  
+  # Convert inputs to vectors
+    altnames = unlist(altnames)
+    benefit = unlist(benefit)
+    cost = unlist(cost)
+    CE = unlist(CE)
+    BB = unlist(BB)
+  
   # Save old par and restore upon exiting function
     oldpar <- par("mfrow", "mgp", "mar")
     on.exit(par(oldpar))
