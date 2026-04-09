@@ -2,11 +2,11 @@
 #'
 #' \code{CEfinder} returns cost-effectiveness analysis for a particular set of alternatives.
 #'
-#' @param benefit a vector of restoration benefits. Typically, these are time-averaged
+#' @param benefit a vector, matrix, or data frame of restoration benefits. Typically, these are time-averaged
 #'   ecological outcomes (e.g., average annual habitat units). Often project benefits
 #'   are best presented as the "lift" associated with a restoration action
 #'   (i.e., the benefits of an alternative minus the benefits of a "no action" plan).
-#' @param cost a vector of restoration costs. Typically, these are monetary costs
+#' @param cost a vector, matrix, or data frame of restoration costs. Typically, these are monetary costs
 #'   associated with a given restoration action such as project first cost or
 #'   annualized economic cost. Notably, these functions are agnostic to units, so costs
 #'   could also be non-monetary such as lost political capital or social costs
@@ -32,6 +32,10 @@
 #'
 #' @export
 CEfinder <- function(benefit, cost){
+  
+  # Convert inputs to vectors
+  benefit = unlist(benefit)
+  cost = unlist(cost)
   
   # Stop non-finite, negative, NA, and non-numeric input values
   if (any(is.infinite(benefit))) {
