@@ -42,21 +42,22 @@ HSIwarimean <- function(x, w){
   or weighting system.")
   
   # Convert all inputs to vectors
-  x = as.numeric(unlist(x))
-  w = as.numeric(unlist(w))
+  x = unlist(x)
+  w = unlist(w)
   
   # Test whether x and w are the same length
   if(sum(!is.na(x)) != sum(!is.na(w))){
     stop("Number of non-NA weights does not equal number of non-NA suitability indices.", call. = FALSE)
   } 
   
-  # Test whether x inputs are valid
+  # Test whether x and w are valid
+  if (any(is.infinite(x) | !is.numeric(x) | is.infinite(w) | !is.numeric(w))) {
+    stop("Non-NA inputs must be finite numeric values.")
+  }
+  
+  # Test whether x inputs are between 0 and 1
   if (any(x < 0 | x > 1, na.rm = TRUE)) {
     stop("Suitability indices must be between 0 and 1.", call. = FALSE)
-  }
-  # Test whether x and w are valid
-  if (any(is.infinite(x) | is.infinite(w))) {
-    stop("Non-NA inputs must be finite numeric values.")
   }
   
   # Test whether weights are negative
