@@ -4,7 +4,9 @@
 #'  in U.S. Fish and Wildlife Service habitat suitability models contained within ecorest
 #'  via HSImodels and HSImetadata. Habitat suitability indices represent an overall assessment
 #'  of habitat quality from combining individual suitability indices for multiple independent
-#'  variables. The function computes an overall habitat suitability index.
+#'  variables. The function computes an overall habitat suitability index. Note that models 
+#'  compatible with HSIeqtn are certified for use by the U.S. Army Corps of Engineers
+#'  by the National Ecosystem Planning Center of Expertise (Eco-PCX).
 #'
 #' @param HSImodelname a character string in quotations that must match an existing model
 #'  name in HSImetadata.
@@ -68,6 +70,8 @@
 #'
 #' @export
 HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
+  # Convert SIV to matrix
+  SIV = as.matrix(SIV)
   # Throw error if SIV inputs are not between zero and one
   if (any(SIV < 0 | SIV > 1, na.rm = TRUE)) {
     stop("Suitability index values (SIVs) must be between 0 and 1.", call. = FALSE)
@@ -145,7 +149,7 @@ HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
     }
 
   # Populate the list with input suitability index values
-    for(i in 1:length(SIV)){HSI[[i]] <- SIV[i]}
+    for(i in 1:length(SIV)){HSI[[i]] <- SIV[i, 1]}
 
   # Create a list for outputs with the same structure and headings
     HSI.out <- HSI
