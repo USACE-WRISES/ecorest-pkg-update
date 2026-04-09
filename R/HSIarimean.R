@@ -36,11 +36,23 @@
 HSIarimean <- function(x){
   warning("U.S. Army Corps of Engineers users must have approval from the National Ecosystem 
   Planning Center of Expertise (Eco-PCX) prior to development or application of a new model.")
-  HSI <- mean(as.matrix(x), na.rm=TRUE)
   
+  # Convert all inputs to vectors
+  x = unlist(x)
+  
+  # Test whether x is valid
+  if (any(is.infinite(x) | !is.numeric(x))) {
+    stop("Non-NA inputs must be finite numeric values.")
+  }
+  
+  # Test whether numeric inputs are between zero and one
   if (any(x < 0 | x > 1, na.rm = TRUE)) {
-    stop("Suitability indices must be between 0 and 1 and cannot be infinite or non-numeric.", call. = FALSE)
-  } else if(HSI < 0 | HSI > 1){
+    stop("Suitability indices must be between 0 and 1.", call. = FALSE)
+  }
+  
+  HSI <- mean(x, na.rm=TRUE)
+  
+  if(HSI < 0 | HSI > 1){
     stop("Habitat suitability index is not numeric or is not within 0 to 1 range.", call. = FALSE)
   } else {
     HSIout <- HSI
