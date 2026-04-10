@@ -74,6 +74,9 @@ HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
   # Convert SIV to vector
   SIV = unlist(SIV)
   
+  # Remove excluded NA inputs before length check and evaluation
+  SIV <- SIV[!is.na(SIV)]
+  
   # Test whether SIV inputs are valid
   if (any(is.infinite(SIV) | !is.numeric(SIV))) {
     stop("Non-NA SIV inputs must be finite numeric values.")
