@@ -2,8 +2,9 @@
 #'
 #' \code{annualizer} computes time-averaged quantities based on linear interpolation.
 #'
-#' @param timevec numeric vector of time intervals.
-#' @param benefits numeric vector of ecological output values for a single condition (e.g., future with project) to be interpolated.
+#' @param timevec a numeric vector, matrix, or data frame of time intervals.
+#' @param benefits a numeric vector, matrix, or data frame of ecological output 
+#' values for a single condition (e.g., future with project) to be interpolated.
 #'
 #' @return A time-averaged value over the specified time horizon.
 #'
@@ -28,6 +29,11 @@
 #'
 #' @export
 annualizer <- function(timevec, benefits){
+  
+  # Convert input data to vectors
+  timevec = unlist(timevec)
+  benefits = unlist(benefits)
+  
   # Compute general properties of the time and benefits data
   if(length(timevec) != length(benefits)){
     stop("Number of time points does not equal number of benefit values.", call. = FALSE)
@@ -37,10 +43,10 @@ annualizer <- function(timevec, benefits){
     stop("Lengths of `timevec` and `benefits` must match.", call. = FALSE)
   }
   # Stop non-finite, negative, and non-numeric input values
-  if (any(!is.finite(benefits[!is.na(benefits)]))) {
+  if (any(is.infinite(benefits[!is.na(benefits)]))) {
     stop("`benefits` must contain only finite numeric values.", call. = FALSE)
   }
-  if (any(!is.finite(timevec[!is.na(timevec)]))) {
+  if (any(is.infinite(timevec[!is.na(timevec)]))) {
     stop("`timevec` must contain only finite numeric values.", call. = FALSE)
   }
   if (any(benefits < 0, na.rm = TRUE)) {
@@ -50,7 +56,7 @@ annualizer <- function(timevec, benefits){
     stop("`timevec` must be non-negative.", call. = FALSE)
   }
   if (!is.numeric(benefits) || !is.numeric(timevec)) {
-    stop("`benefit` and `timevec` must be numeric vectors.", call. = FALSE)
+    stop("`benefits` and `timevec` must be numeric vectors.", call. = FALSE)
   }
   # Check for duplicated timevec
   if (any(duplicated(timevec))) {
