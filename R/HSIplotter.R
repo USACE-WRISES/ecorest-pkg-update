@@ -1,11 +1,13 @@
 #' Plots habitat suitability index curves
 #'
-#' \code{HSIplotter} plots all suitability curves.
+#' \code{HSIplotter} plots all suitability curves. Note that U.S. Army Corps 
+#' of Engineers users must have approval from the National Ecosystem Planning 
+#' Center of Expertise (Eco-PCX) prior to development or application of a new model.
 #'
 #' @import graphics
 #' @import grDevices
 #'
-#' @param SI list, matrix, or dataframe of suitability curves ordered as parameter breakpoints and
+#' @param SI list, matrix, or data frame of suitability curves ordered as parameter breakpoints and
 #'   associated suitability indices for each parameter with appropriate column names.
 #'   Models containing both categorical and continuous parameters must be entered as a dataframe.
 #' @param figure.name output figure file name structured as "filename.jpeg".
@@ -54,6 +56,9 @@
 #'
 #' @export
 HSIplotter <- function(SI, figure.name){
+  warning("U.S. Army Corps of Engineers users must have approval from the National Ecosystem 
+  Planning Center of Expertise (Eco-PCX) prior to development or application of a new model.")
+  
   # Save old par and restore upon exiting function
     oldpar <- par("mfrow", "mgp", "mar")
     on.exit(par(oldpar))
