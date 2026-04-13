@@ -48,7 +48,7 @@
 #' @export
 HUcalc <- function(SI.out, habitat.quantity, HSIfunc,...){
     warning("U.S. Army Corps of Engineers users must have approval from the National Ecosystem 
-  Planning Center of Expertise (Eco-PCX) prior to development or application of a new model.")
+  Planning Center of Expertise (Eco-PCX) prior to application of a new model.")
   
   # Convert input to vector
   SI.out = unlist(SI.out)
