@@ -1,11 +1,14 @@
 #' Computes Habitat Suitability Index with Arithmetic Mean
 #'
-#' \code{HSIarimean} uses arithmetic mean to combine suitability indices into an
-#'   overarching habitat suitability index.
+#' \code{HSIarimean} uses an arithmetic mean to combine suitability indices into an
+#'   overarching habitat suitability index. Note that U.S. Army Corps of 
+#'   Engineers users applying the HSIarimean function must have approval from the 
+#'   National Ecosystem Planning Center of Expertise (Eco-PCX) prior to 
+#'   development or application of a new model.
 #'
-#' @param x a vector of suitability indices with values ranging from 0 to 1.
+#' @param x a vector, matrix, or data frame of suitability indices with values ranging from 0 to 1.
 #'
-#' @return A value of habitat quality from 0 to 1 ignoring NA values.
+#' @return A value of habitat quality ranging from 0 to 1 (ignoring NA values).
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
@@ -19,19 +22,38 @@
 #'
 #' @examples
 #' #Determine patch quality based on a vector of four suitability indices.
-#' HSIarimean(c(0.25, 0.25, 0.25, 0.25))
+#' HSIarimean(c(0.1, 0.25, 0.25, 0.25))
 #'
 #' #Determine patch quality based on a vector of suitability indices with an NA.
-#' HSIarimean(c(0.25, 0.25, NA, 0.25))
+#' HSIarimean(c(0.1, 0.25, NA, 0.25))
+#' 
+#' #Determine patch quality based on a data frame of suitability indices
+#' x = data.frame(0.1, 0.25, 0.25, 0.25)
+#' colnames(x) = c("var1", "var2", "var3", "var4")
+#' HSIarimean(x)
 #'
 #' @export
 HSIarimean <- function(x){
-  HSI <- mean(x, na.rm=TRUE)
+  warning("U.S. Army Corps of Engineers users must have approval from the National Ecosystem 
+  Planning Center of Expertise (Eco-PCX) prior to application of a new model.")
   
+  # Convert all inputs to vectors
+  x = unlist(x)
+  
+  # Test whether x is valid
+  if (any(is.infinite(x) | !is.numeric(x))) {
+    stop("Non-NA inputs must be finite numeric values.")
+  }
+  
+  # Test whether numeric inputs are between zero and one
   if (any(x < 0 | x > 1, na.rm = TRUE)) {
     stop("Suitability indices must be between 0 and 1.", call. = FALSE)
-  } else if(HSI < 0 | HSI > 1){
-    stop("Habitat suitability index not within 0 to 1 range.", call. = FALSE)
+  }
+  
+  HSI <- mean(x, na.rm=TRUE)
+  
+  if(HSI < 0 | HSI > 1){
+    stop("Habitat suitability index is not numeric or is not within 0 to 1 range.", call. = FALSE)
   } else {
     HSIout <- HSI
   }
