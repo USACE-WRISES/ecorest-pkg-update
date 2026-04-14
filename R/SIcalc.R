@@ -31,27 +31,23 @@
 #' #Allen A.W. 1982. Habitat Suitability Index Models: Barred owl. FWS/OBS 82/10.143.
 #' #U.S. Fish and Wildlife Service. https://pubs.er.usgs.gov/publication/fwsobs82_10_143.
 #' var1 <- cbind(c(0,2,4,NA), c(0.1,1,1,NA)) #Number of trees > 51cm diameter per 0.4 ha plot
-#' var2 <- cbind(c(0,5,20,NA), c(0,0,1,NA)) #Mean diameter of overstory trees
+#' var2 <- cbind(c(0,13,51,NA), c(0,0,1,NA)) #Mean diameter of overstory trees
 #' var3 <- cbind(c(0,20,60,100), c(0,0,1,1)) #Percent canopy cover of overstory trees
 #' barredowl <- cbind(var1, var2, var3)
 #' colnames(barredowl)<- c("tree.num", "tree.num.SIV",
 #'   "avg.dbh.in", "avg.dbh.SIV", "can.cov", "can.cov.SIV")
 #'
-#' #Set user input variables that should return (1, 0, 0)
-#' input.demo1 <- c(2, 5, 20)
+#' #Set user input variables (in cm) that should return (1, 0, 0)
+#' input.demo1 <- c(2, 5, 0)
 #' SIcalc(barredowl, input.demo1)
 #'
-#' #Set user input variables that should return (1, 1, 1)
-#' input.demo2 <- c(4, 20, 60)
+#' #Set user input variables (in cm) that should return (1, 1, 1)
+#' input.demo2 <- c(51, 51, 60)
 #' SIcalc(barredowl, input.demo2)
 #'
-#' #Set user input variables that should return (1, 1, 0.5)
-#' input.demo3 <- c(4, 20, 40)
+#' #Set user input variables (in cm) that should return (1, 1, 0.5)
+#' input.demo3 <- c(60, 65, 40)
 #' SIcalc(barredowl, input.demo3)
-#'
-#' #Set user input variables that should return (0.1, 0.5, 0.5)
-#' input.demo4 <- c(0, 12.5, 40)
-#' SIcalc(barredowl, input.demo4)
 #'
 #' #Suitability curves may also be drawn from HSImodels (data within ecorest)
 #' #Import Barred Owl suitability curves with HSImodels$barredowl
@@ -65,9 +61,6 @@
 #'
 #' #Set user input variables that should return (1, 1, 0.5)
 #' SIcalc(HSImodels$barredowl, input.demo3)
-#'
-#' #Set user input variables that should return (0.1, 0.5, 0.5)
-#' SIcalc(HSImodels$barredowl, input.demo4)
 #'
 #' 
 #' #Import juvenile Alewife suitability curves with HSImodels$alewifeJuv
