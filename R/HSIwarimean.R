@@ -4,7 +4,7 @@
 #'   indices into an overarching habitat suitability index. Note that U.S. Army 
 #'   Corps of Engineers users applying the HSIwarimean function must have 
 #'   approval from the National Ecosystem Planning Center of Expertise (Eco-PCX) 
-#'   prior to development or application of a new model or weighting system.
+#'   prior to application of a new model or weighting system.
 #'
 #' @param x is a vector, matrix, or data frame of suitability indices ranging from 0 to 1.
 #' @param w is a vector, matrix, or data frame of weights ranging from 0 to 1 that must sum to one.
@@ -38,7 +38,7 @@
 #' @export
 HSIwarimean <- function(x, w){
   warning("U.S. Army Corps of Engineers users must have approval from the National Ecosystem 
-  Planning Center of Expertise (Eco-PCX) prior to development or application of a new model
+  Planning Center of Expertise (Eco-PCX) prior to application of a new model
   or weighting system.")
   
   # Convert all inputs to vectors
