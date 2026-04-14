@@ -76,8 +76,8 @@
 #' #U.S. Dept. Int. Fish Wildl. Serv. FWS/OBS-82/10.58. 22pp.
 #' 
 #' #Set user variables that should return (NA, NA, 1, 1, 0)
-#' input.demo7 <- c(NA, NA, 125, 5, 5)
-#' SIcalc(HSImodels$alewifeJuv, input.demo7)
+#' input.demo5 <- c(NA, NA, 125, 5, 5)
+#' SIcalc(HSImodels$alewifeJuv, input.demo5)
 #'
 #' @export
 SIcalc <- function(SI, input.proj){
