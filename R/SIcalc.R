@@ -76,18 +76,25 @@
 #' #U.S. Dept. Int. Fish Wildl. Serv. FWS/OBS-82/10.58. 22pp.
 #' 
 #' #Set user variables that should return (NA, NA, 1, 1, 0)
-#' input.demo7 <- c(NA, NA, 125, 5, 5)
-#' SIcalc(HSImodels$alewifeJuv, input.demo7)
+#' input.demo5 <- c(NA, NA, 125, 5, 5)
+#' SIcalc(HSImodels$alewifeJuv, input.demo5)
 #'
 #' @export
 SIcalc <- function(SI, input.proj){
+  #Standardize user input to a simple unnamed vector
+  #This allows the function to work whether input.proj is vector or one row data frame
+  input.proj <- unlist(input.proj, use.names = FALSE)
+  
   #Number of variables in the suitability index model
-  nSI <- length(colnames(SI)) / 2
+  nSI <- ncol(SI) / 2
+  
+  # Stop if number of inputs does not match number of SI variables.
+  if(length(input.proj) != nSI){
+    stop("Number of inputs does not equal number of SI values.", call. = FALSE)
+  }
   
   #Check that all suitability indices in SI are between 0 and 1
   even_cols <- seq(2, ncol(SI), by = 2)
-  
-  # Check for invalid inputs < 0 or > 1
   if(any(SI[, even_cols] < 0 | SI[, even_cols] > 1, na.rm = TRUE)){
     stop("Suitability index values in SI must be between 0 and 1.", call. = FALSE)
   }
@@ -96,50 +103,81 @@ SIcalc <- function(SI, input.proj){
       any(as.character(input.proj) %in% c("Inf", "-Inf"), na.rm = TRUE)) {
     stop("input.proj contains infinite values (Inf or -Inf), which are not allowed.", call. = FALSE)
   }
+  # Pre-allocate output.
+  SI.out <- rep(NA_real_, nSI)
   
-  #Identify continuous and categorical variables based on first entry of each suitability curve
-  SI.cont <- c() #TRUE = continuous, FALSE = categorical
+  # Loop over variables.
   for(i in 1:nSI){
-    SI.cont[i] <- is.numeric(SI[1, 2*i-1])
-    #For continuous variables, check that input.proj falls within the defined range of SI
-    if (all(is.na(SI[ , 2*i-1]))) {
+    
+    # Breakpoint/class column and associated SIV column.
+    xcol <- SI[,2*i - 1]
+    ycol <- SI[, 2*i]
+    
+    # User input for this variable.
+    x <- input.proj[i]
+    
+    # If the model variable is excluded, return NA.
+    if(all(is.na(xcol)) && all(is.na(ycol))){
+      SI.out[i] <- NA
       next
-    } else if (SI.cont[i] == TRUE) {
-        min_SI = min(SI[, 2*i-1], na.rm = TRUE)
-        max_SI = max(SI[, 2*i-1], na.rm = TRUE)
-        if (as.numeric(input.proj[i]) < min_SI | as.numeric(input.proj[i]) > max_SI) {
-          stop("Values in input.proj must fall within the ranges provided in SI.", call. = FALSE)
-      }
-    } else if (SI.cont[i] == FALSE) {
-      allowed <- unique(as.character(SI[, 2*i-1]))
-      allowed <- allowed[!is.na(allowed)]
-      if (!(as.character(input.proj[i]) %in% allowed)) {
+    }
+    
+    # If the user input is NA, return NA.
+    if(is.na(x) || identical(as.character(x), "NA")){
+      SI.out[i] <- NA
+      next
+    }
+    
+    # Try to interpret breakpoint column as numeric.
+    xcol_num <- suppressWarnings(as.numeric(as.character(xcol)))
+    ycol_num <- suppressWarnings(as.numeric(as.character(ycol)))
+    x_num    <- suppressWarnings(as.numeric(as.character(x)))
+    
+    # Treat as continuous if the breakpoint column contains usable numeric values.
+    is_cont <- any(!is.na(xcol_num))
+    
+    if(is_cont){
+      keep <- !is.na(xcol_num) & !is.na(ycol_num)
+      
+      min_SI <- min(xcol_num[keep], na.rm = TRUE)
+      max_SI <- max(xcol_num[keep], na.rm = TRUE)
+      
+      if(x_num < min_SI || x_num > max_SI){
         stop("Values in input.proj must fall within the ranges provided in SI.", call. = FALSE)
       }
-    }
-    }
-  
-
-  #Loop over each variable and compute suitability index values for each input
-  SI.out <- c()
-  for(i in 1:nSI){
-    #Check that the number of inputs equals the number of SI values.
-    if(length(input.proj) != nSI){
-      stop("Number of inputs does not equal number of SI values.", call. = FALSE)
-
-      #Send NA if NA or "NA" is input
-    } else if(is.na(input.proj[i]) | input.proj[i]=="NA"){
-      SI.out[i] <- NA
-
-      #Compute suitability for continuous variables
-    } else if(SI.cont[i] == TRUE){
-      SI.out[i] <- approx(SI[,2*i-1], SI[,i*2], xout=input.proj[i],
-                          method="linear", rule=2, ties="ordered")$y
-
-      #Compute suitability for categorical variables
+      
+      SI.out[i] <- approx(
+        x = xcol_num[keep],
+        y = ycol_num[keep],
+        xout = x_num,
+        method = "linear",
+        rule = 2,
+        ties = "ordered"
+      )$y
+      
     } else {
-      SI.out[i] <- SI[which(SI[,i*2-1] == input.proj[i]),i*2]
+      allowed <- unique(as.character(xcol))
+      allowed <- allowed[!is.na(allowed)]
+      
+      if(!(as.character(x) %in% allowed)){
+        stop("Values in input.proj must fall within the ranges provided in SI.", call. = FALSE)
+      }
+      
+      idx <- which(as.character(xcol) == as.character(x))
+      
+      if(length(idx) == 0){
+        stop(
+          paste0(
+            "No categorical match found for variable ", i,
+            " with input value: ", as.character(x)
+          ),
+          call. = FALSE
+        )
+      }
+      
+      SI.out[i] <- suppressWarnings(as.numeric(as.character(ycol[idx[1]])))
     }
   }
-  return(SI.out) #Send output
+  
+  return(SI.out)
 }
