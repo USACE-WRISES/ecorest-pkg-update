@@ -2,7 +2,7 @@
 #'
 #' \code{HSIplotter} plots all suitability curves. Note that U.S. Army Corps 
 #' of Engineers users must have approval from the National Ecosystem Planning 
-#' Center of Expertise (Eco-PCX) prior to development or application of a new model.
+#' Center of Expertise (Eco-PCX) prior to application of a new model.
 #'
 #' @import graphics
 #' @import grDevices
