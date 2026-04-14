@@ -110,8 +110,8 @@ SIcalc <- function(SI, input.proj){
   for(i in 1:nSI){
     
     # Breakpoint/class column and associated SIV column.
-    xcol <- SI[[2*i - 1]]
-    ycol <- SI[[2*i]]
+    xcol <- SI[,2*i - 1]
+    ycol <- SI[, 2*i]
     
     # User input for this variable.
     x <- input.proj[i]
