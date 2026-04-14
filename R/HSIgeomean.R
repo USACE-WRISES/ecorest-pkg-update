@@ -4,7 +4,7 @@
 #'   overarching habitat suitability index. Note that U.S. Army Corps of 
 #'   Engineers users applying the HSIgeomean function must have approval from 
 #'   the National Ecosystem Planning Center of Expertise (Eco-PCX) prior to 
-#'   development or application of a new model.
+#'   application of a new model.
 #'
 #' @param x a vector, matrix, or data frame of suitability indices with values ranging from 0 to 1.
 #'
