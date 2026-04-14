@@ -4,7 +4,7 @@
 #'  a habitat suitability index equation, and habitat quantity. Note that U.S. 
 #'  Army Corps of Engineers users applying HUcalc must have approval from the 
 #'  National Ecosystem Planning Center of Expertise (Eco-PCX) prior to 
-#'  development or application of a new model.
+#'  application of a new model.
 #'
 #' @param SI.out is a vector, matrix, or data frame of application-specific 
 #' suitability indices between 0 and 1, which can be produced from SIcalc.
