@@ -69,7 +69,11 @@
 #' #U.S. Dept. Int. Fish Wildl. Serv. FWS/OBS-82/10.58. 22pp.
 #' 
 #' #Set user variables that should return (NA, NA, 1, 1, 0)
-#' input.demo5 <- c(NA, NA, 125, 5, 5)
+#' input.demo4 <- c(NA, NA, 125, 5, 5)
+#' SIcalc(HSImodels$alewifeJuv, input.demo4)
+#' 
+#' #Demonstrate use with out of range continuous inputs
+#' input.demo5 <- c(NA, NA, 140, 5, 5)
 #' SIcalc(HSImodels$alewifeJuv, input.demo5)
 #'
 #' @export
@@ -79,7 +83,7 @@ SIcalc <- function(SI, input.proj){
   input.proj <- unlist(input.proj, use.names = FALSE)
   
   warning(
-    "U.S. Army Corps of Engineers users must have approval from the National Ecosystem Planning Center of Expertise (Eco-PCX) prior to application of a new model",
+    "U.S. Army Corps of Engineers users must have approval from the National Ecosystem Planning Center of Expertise (Eco-PCX) prior to application of a new model.",
     call. = FALSE
   )
   
