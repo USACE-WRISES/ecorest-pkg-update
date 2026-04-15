@@ -69,7 +69,11 @@
 #' #U.S. Dept. Int. Fish Wildl. Serv. FWS/OBS-82/10.58. 22pp.
 #' 
 #' #Set user variables that should return (NA, NA, 1, 1, 0)
-#' input.demo5 <- c(NA, NA, 125, 5, 5)
+#' input.demo4 <- c(NA, NA, 125, 5, 5)
+#' SIcalc(HSImodels$alewifeJuv, input.demo4)
+#' 
+#' #Demonstrate use with out of range continuous inputs
+#' input.demo5 <- c(NA, NA, 140, 5, 5)
 #' SIcalc(HSImodels$alewifeJuv, input.demo5)
 #'
 #' @export
@@ -77,6 +81,11 @@ SIcalc <- function(SI, input.proj){
   #Standardize user input to a simple unnamed vector
   #This allows the function to work whether input.proj is vector or one row data frame
   input.proj <- unlist(input.proj, use.names = FALSE)
+  
+  warning(
+    "U.S. Army Corps of Engineers users must have approval from the National Ecosystem Planning Center of Expertise (Eco-PCX) prior to application of a new model.",
+    call. = FALSE
+  )
   
   #Number of variables in the suitability index model
   nSI <- ncol(SI) / 2
@@ -92,13 +101,13 @@ SIcalc <- function(SI, input.proj){
     stop("Suitability index values in SI must be between 0 and 1.", call. = FALSE)
   }
     # Check for infinite inputs (numeric +/-Inf and character "Inf"/"-Inf")
-  if (any(is.infinite(input.proj), na.rm = TRUE) ||
+  if(any(is.infinite(suppressWarnings(as.numeric(input.proj))), na.rm = TRUE) ||
       any(as.character(input.proj) %in% c("Inf", "-Inf"), na.rm = TRUE)) {
     stop("input.proj contains infinite values (Inf or -Inf), which are not allowed.", call. = FALSE)
   }
   # Pre-allocate output.
   SI.out <- rep(NA_real_, nSI)
-  
+  capped_any <- FALSE
   # Loop over variables.
   for(i in 1:nSI){
     
@@ -132,11 +141,18 @@ SIcalc <- function(SI, input.proj){
     if(is_cont){
       keep <- !is.na(xcol_num) & !is.na(ycol_num)
       
-      min_SI <- min(xcol_num[keep], na.rm = TRUE)
-      max_SI <- max(xcol_num[keep], na.rm = TRUE)
+      min_x <- min(xcol_num[keep], na.rm = TRUE)
+      max_x <- max(xcol_num[keep], na.rm = TRUE)
       
-      if(x_num < min_SI || x_num > max_SI){
-        stop("Values in input.proj must fall within the ranges provided in SI.", call. = FALSE)
+      if(is.na(x_num)){
+        stop(
+          paste0("Input for variable ", i, " must be numeric for a continuous suitability curve."),
+          call. = FALSE
+        )
+      }
+      
+      if(x_num < min_x || x_num > max_x){
+        capped_any <- TRUE
       }
       
       SI.out[i] <- approx(
@@ -171,6 +187,11 @@ SIcalc <- function(SI, input.proj){
       SI.out[i] <- suppressWarnings(as.numeric(as.character(ycol[idx[1]])))
     }
   }
-  
+  if(capped_any){
+    warning(
+      "Numeric values outside the suitability curve range were capped at the nearest minimum or maximum breakpoint.",
+      call. = FALSE
+    )
+  }
   return(SI.out)
 }
