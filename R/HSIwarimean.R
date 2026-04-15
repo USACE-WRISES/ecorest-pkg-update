@@ -1,12 +1,15 @@
 #' Habitat Suitability Index with a Weighted Arithmetic Mean
 #'
 #' \code{HSIwarimean} uses a weighted arithmetic mean to combine suitability
-#'   indices into an overarching habitat suitability index.
+#'   indices into an overarching habitat suitability index. Note that U.S. Army 
+#'   Corps of Engineers users applying the HSIwarimean function must have 
+#'   approval from the National Ecosystem Planning Center of Expertise (Eco-PCX) 
+#'   prior to application of a new model or weighting system.
 #'
-#' @param x is a vector of suitability indices ranging from 0 to 1.
-#' @param w is a vector of weights (0 to 1 values that must sum to one).
+#' @param x is a vector, matrix, or data frame of suitability indices ranging from 0 to 1.
+#' @param w is a vector, matrix, or data frame of weights ranging from 0 to 1 that must sum to one.
 #'
-#' @return A value of habitat quality from 0 to 1 ignoring NA values.
+#' @return A value of habitat quality ranging from 0 to 1 (ignoring NA values).
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
@@ -27,20 +30,51 @@
 #'
 #' #Determine patch quality based on a vector of four, unequal-weight suitability indices.
 #' HSIwarimean(c(1, 0, 0, 0), c(0, 1, 0, 0))
+#' 
+#' #Determine patch quality based on a data frame of four, unequal-weight suitability indices
+#' df = data.frame(x = c(0.25, 0.5, 0.5, 0.5), w = c(0.25, 0.2, 0.5, 0.05))
+#' HSIwarimean(df$x, df$w)
 #'
 #' @export
 HSIwarimean <- function(x, w){
-  if(length(w) != length(x)){
-    stop("Number of weights does not equal number of suitability indices.", call. = FALSE)
-  } else if (sum(w, na.rm=TRUE)!= 1){
-    stop("The sum of weights must be 1.", call. = FALSE)
-  } else if (any(x < 0 | x > 1, na.rm = TRUE)) {
-    stop("Suitability indices must be between 0 and 1.", call. = FALSE)
-  }  else {
-    wmean <- sum(x * w, na.rm=TRUE)
+  warning("U.S. Army Corps of Engineers users must have approval from the National Ecosystem 
+  Planning Center of Expertise (Eco-PCX) prior to application of a new model
+  or weighting system.")
+  
+  # Convert all inputs to vectors
+  x = unlist(x)
+  w = unlist(w)
+  
+  # Test whether x and w are the same length
+  if(sum(!is.na(x)) != sum(!is.na(w))){
+    stop("Number of non-NA weights does not equal number of non-NA suitability indices.", call. = FALSE)
+  } 
+  
+  # Test whether x and w are valid
+  if (any(is.infinite(x) | !is.numeric(x) | is.infinite(w) | !is.numeric(w))) {
+    stop("Non-NA inputs must be finite numeric values.")
   }
+  
+  # Test whether x inputs are between 0 and 1
+  if (any(x < 0 | x > 1, na.rm = TRUE)) {
+    stop("Suitability indices must be between 0 and 1.", call. = FALSE)
+  }
+  
+  # Test whether weights are negative
+  if(any(w < 0, na.rm = TRUE)){
+    stop("Weights cannot be negative.", call. = FALSE)
+  }
+  
+  # Test whether weights sum to 1
+  if(abs(sum(w, na.rm = T) - 1) > 1e-8){
+    stop("The sum of non-NA weights must equal 1.", call. = FALSE)
+  } 
+  
+  # Calculate the weighted arithmetic mean
+  wmean <- sum(x * w, na.rm=TRUE)
+
   if (wmean < 0 | wmean > 1){
-    stop("Habitat suitability index not within 0 to 1 range.", call. = FALSE)
+    stop("Habitat suitability index is not numeric or is not within 0 to 1 range.", call. = FALSE)
   }
   
   return(wmean)
