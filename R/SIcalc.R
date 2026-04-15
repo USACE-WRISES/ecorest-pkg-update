@@ -78,6 +78,11 @@ SIcalc <- function(SI, input.proj){
   #This allows the function to work whether input.proj is vector or one row data frame
   input.proj <- unlist(input.proj, use.names = FALSE)
   
+  warning(
+    "U.S. Army Corps of Engineers users must have approval from the National Ecosystem Planning Center of Expertise (Eco-PCX) prior to application of a new model",
+    call. = FALSE
+  )
+  
   #Number of variables in the suitability index model
   nSI <- ncol(SI) / 2
   
