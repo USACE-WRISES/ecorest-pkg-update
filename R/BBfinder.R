@@ -4,16 +4,16 @@
 #'   isolate how unit cost (cost/benefit) increases with increasing environmental benefit.
 #'   Restoration actions with the lowest slope of unit cost are considered "best buys".
 #'
-#' @param benefit a vector of restoration benefits. Typically, these are time-averaged
+#' @param benefit a vector, matrix, or data frame of restoration benefits. Typically, these are time-averaged
 #'   ecological outcomes (e.g., average annual habitat units). Often project benefits
 #'   are best presented as the "lift" associated with a restoration action
 #'   (i.e., the benefits of an alternative minus the benefits of a "no action" plan).
-#' @param cost a vector of restoration costs. Typically, these are monetary costs
+#' @param cost a vector, matrix, or data frame of restoration costs. Typically, these are monetary costs
 #'   associated with a given restoration action such as project first cost or
 #'   annualized economic cost. Notably, these functions are agnostic to units, so costs
 #'   could also be non-monetary such as lost political capital or social costs
 #'   of each alternative.
-#' @param CE numeric vector of 0's and 1's indicating whether a plan is cost-effective (1)
+#' @param CE a numeric vector, matrix, or data frame of 0's and 1's indicating whether a plan is cost-effective (1)
 #'   or non-cost-effective (0). Can be derived from ecorest::CEfinder.
 #'
 #' @return A list with summaries of all restoration actions as well as best buy plans only.
@@ -40,6 +40,12 @@
 #'
 #' @export
 BBfinder <- function(benefit, cost, CE){
+  
+  # Convert inputs to vectors
+  benefit = unlist(benefit)
+  cost = unlist(cost)
+  CE = unlist(CE)
+  
   # Length check (prevents recycling) and adds mismatched length error in benefit, costs or CE
   if (length(benefit) != length(cost) || length(benefit) != length(CE)) {
     stop("Lengths of `benefit`, `cost`, and `CE` must match (one value per plan).", call. = FALSE)
