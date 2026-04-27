@@ -187,6 +187,9 @@ SIcalc <- function(SI, input.proj){
       SI.out[i] <- suppressWarnings(as.numeric(as.character(ycol[idx[1]])))
     }
   }
+  # Name output by SIV position
+  names(SI.out) <- paste0("SIV", seq_len(nSI))
+  
   if(capped_any){
     warning(
       "Numeric values outside the suitability curve range were capped at the nearest minimum or maximum breakpoint.",
