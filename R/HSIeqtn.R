@@ -71,27 +71,48 @@
 #' @export
 HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
   
-  # Convert SIV to vector
-  SIV = unlist(SIV)
-  
-  # Remove excluded NA inputs before length check and evaluation
-  SIV <- SIV[!is.na(SIV)]
-  
-  # Test whether SIV inputs are valid
-  if (any(is.infinite(SIV) | !is.numeric(SIV))) {
-    stop("Non-NA SIV inputs must be finite numeric values.")
-  }
-  
-  # Test whether SIV inputs are between zero and one
-  if (any(SIV < 0 | SIV > 1, na.rm = TRUE)) {
-    stop("Suitability index values (SIVs) must be between 0 and 1.", call. = FALSE)
-  }
+  # Convert SIV to a simple unnamed vector
+  SIV <- unlist(SIV, use.names = FALSE)
   
   # Find the location of the model in HSImetadata
   model.loc <- which(HSImetadata$model == HSImodelname)
   
-  # Isolate input variables and assign generic naming
-  SIV.name.gen <- names(which(colSums(!is.na(HSImetadata[model.loc,9:40])) > 0))
+  if(length(model.loc) == 0){
+    stop("HSImodelname was not found in HSImetadata.", call. = FALSE)
+  }
+  
+  # Identify only the main SIV fields in HSImetadata (exclude SIV1B, SIV2B, etc.)
+  SIV.cols <- grep("^SIV[0-9]+$", colnames(HSImetadata))
+  
+  # Keep only the SIV fields used by this model
+  SIV.name.gen <- colnames(HSImetadata)[SIV.cols][!is.na(HSImetadata[model.loc, SIV.cols])]
+  
+  # Convert SIV names like "SIV1", "SIV5", "SIV6" into numeric positions
+  SIV.idx <- as.integer(sub("SIV", "", SIV.name.gen))
+  
+  # Align supplied SIV vector to the active model positions only
+  if(length(SIV) >= max(SIV.idx)){
+    SIV <- SIV[SIV.idx]
+  }
+  
+  # Test whether SIV inputs are numeric and finite
+  SIV.num <- suppressWarnings(as.numeric(SIV))
+  
+  if(any(is.na(SIV.num) & !is.na(SIV))){
+    stop("Non-NA SIV inputs must be numeric values.", call. = FALSE)
+  }
+  
+  if(any(is.infinite(SIV.num[!is.na(SIV.num)]))){
+    stop("Non-NA SIV inputs must be finite numeric values.", call. = FALSE)
+  }
+  
+  SIV <- SIV.num
+  
+  # Test whether SIV inputs are between zero and one
+  if(any(SIV < 0 | SIV > 1, na.rm = TRUE)){
+    stop("Suitability index values (SIVs) must be between 0 and 1.", call. = FALSE)
+  }
+
   
   # Set names for outputs
   var.name <- c(SIV.name.gen, "CF", "CRF", "CRN","CC","CCRO","CCRF","CCF",
