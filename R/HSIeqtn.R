@@ -12,7 +12,7 @@
 #'  name in HSImetadata.
 #' @param SIV a named vector, dataframe, or matrix of suitability index values ranging 
 #' from 0 to 1 used in the model specified in HSImodelname. Names must correspond 
-#' with SIV names (e.g., "SIV1", "SIV1B", "SIV2", etc.)
+#' exactly with SIV names (e.g., "SIV1", "SIV1B", "SIV2", etc.)
 #' @param HSImetadata a data frame of HSI model metadata within the ecorest package.
 #' @param exclude a vector of character strings specifying components to be excluded 
 #' from calculations. Non-NULL 'exclude' inputs are only applicable to models that explicitly
@@ -77,7 +77,7 @@
 #' @export
 HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
   
-  # Convert SIV to a simple unnamed vector
+  # Convert SIV to a simple named vector
   SIV <- unlist(SIV, use.names = TRUE)
   
   # Find the location of the model in HSImetadata
@@ -95,6 +95,7 @@ HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
   # Independently identify which input variables occur in the model
   SIV.name.gen <- names(which(colSums(!is.na(HSImetadata[model.loc,9:40])) > 0))
   
+  # If user inputs don't exactly match model inputs, remove unused vars and report warning
   if (!identical(names(SIV), SIV.name.gen)) {
     removed = names(SIV)[!(names(SIV) %in% SIV.name.gen)]
     SIV = SIV[SIV.name.gen]
