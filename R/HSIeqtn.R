@@ -96,7 +96,12 @@ HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
   SIV.name.gen <- names(which(colSums(!is.na(HSImetadata[model.loc,9:40])) > 0))
   
   if (!identical(names(SIV), SIV.name.gen)) {
+    removed = names(SIV)[!(names(SIV) %in% SIV.name.gen)]
     SIV = SIV[SIV.name.gen]
+    warning(paste0(
+      "The following variables were removed from the HSI calculation: ",
+      paste(removed, collapse = ", ")
+    ), call. = FALSE)
   }
   
   # Test whether SIV inputs are numeric and finite
