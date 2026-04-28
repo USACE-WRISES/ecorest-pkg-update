@@ -14,7 +14,7 @@
 #'   parameters associated with the suitability curve data from SI. Note that users should 
 #'   enter NA for excluded variables in HSImodels.
 #'
-#' @return A vector of the suitability index values ranging from 0 to 1 that match given user inputs.
+#' @return A named vector of suitability index values ranging from 0 to 1 that match given user inputs.
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
@@ -187,6 +187,9 @@ SIcalc <- function(SI, input.proj){
       SI.out[i] <- suppressWarnings(as.numeric(as.character(ycol[idx[1]])))
     }
   }
+  # Name output by SIV position
+  names(SI.out) <- paste0("SIV", seq_len(nSI))
+  
   if(capped_any){
     warning(
       "Numeric values outside the suitability curve range were capped at the nearest minimum or maximum breakpoint.",
