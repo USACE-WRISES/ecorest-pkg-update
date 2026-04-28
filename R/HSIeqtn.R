@@ -10,14 +10,15 @@
 #'
 #' @param HSImodelname a character string in quotations that must match an existing model
 #'  name in HSImetadata.
-#' @param SIV a vector, dataframe, or matrix of suitability index values ranging 
-#' from 0 to 1 used in the model specified in HSImodelname.
+#' @param SIV a named vector, dataframe, or matrix of suitability index values ranging 
+#' from 0 to 1 used in the model specified in HSImodelname. Names must correspond 
+#' exactly with SIV names (e.g., "SIV1", "SIV1B", "SIV2", etc.)
 #' @param HSImetadata a data frame of HSI model metadata within the ecorest package.
 #' @param exclude a vector of character strings specifying components to be excluded 
 #' from calculations. Non-NULL 'exclude' inputs are only applicable to models that explicitly
 #' provide instructions for use in the note column of HSImetadata.
 #'
-#' @return A numeric of the habitat suitability index ranging from 0 to 1.
+#' @return A numeric value between zero and one representing the composite habitat suitability index score.
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
@@ -34,21 +35,19 @@
 #' #Compute patch quality for the Barred Owl model (no components)
 #' #Allen A.W. 1982. Habitat Suitability Index Models: Barred owl. FWS/OBS 82/10.143.
 #' #U.S. Fish and Wildlife Service. https://pubs.er.usgs.gov/publication/fwsobs82_10_143.
-#' #Suitability indices relate to density of large trees, mean diameter of overstory trees,
-#' #and percent canopy cover of overstory.
-#' #Example suitability vectors
-#' HSIeqtn("barredowl", c(1,1,1), HSImetadata) #c(1,1,1) should result in 1.00
-#' HSIeqtn("barredowl", c(0.5,1,1), HSImetadata) #c(0.5,1,1) should result in 0.707
-#' HSIeqtn("barredowl", c(0,1,1), HSImetadata) #c(0,1,1) should result in 0.00
+#' #Suitability indices relate to density of large trees (SIV1), mean diameter of overstory trees (SIV2),
+#' #and percent canopy cover of overstory (SIV3).
+#' HSIeqtn("barredowl", c("SIV1" = 1, "SIV2" = 1, "SIV3" = 1), HSImetadata) #c(1,1,1) should result in 1.00
+#' HSIeqtn("barredowl", c("SIV1" = 0.5, "SIV2" = 1, "SIV3" = 1), HSImetadata) #c(0.5,1,1) should result in 0.707
+#' HSIeqtn("barredowl", c("SIV1" = 0, "SIV2" = 1, "SIV3" = 1), HSImetadata) #c(0,1,1) should result in 0.00
 #'
 #' #Compute patch quality for the Juvenile Alewife model (two components)
 #' #Pardue, G.B. 1983. Habitat Suitability index models: alewife and blueback herring.
 #' #U.S. Dept. Int. Fish Wildl. Serv. FWS/OBS-82/10.58. 22pp.
 #' #Suitability indices relate to zooplankton density, salinity, and water temperature
-#' #Example suitability vectors are c(1,1,1), c(0.5,1,1), and c(0,1,1)
-#' HSIeqtn("alewifeJuv", c(1,1,1), HSImetadata) #c(1,1,1) should result in 1.00
-#' HSIeqtn("alewifeJuv", c(0.5,1,1), HSImetadata) #c(0.5,1,1) should result in 0.50
-#' HSIeqtn("alewifeJuv", c(0,1,1), HSImetadata) #c(0,1,1) should result in 0.00
+#' HSIeqtn("alewifeJuv", c("SIV1" = NA, "SIV2" = NA, "SIV3" = 1, "SIV4" = 1, "SIV5" = 1), HSImetadata) #should result in 1.00
+#' HSIeqtn("alewifeJuv", c("SIV1" = NA, "SIV2" = NA, "SIV3" = 0.5, "SIV4" = 1, "SIV5" = 1), HSImetadata) # should result in 0.50
+#' HSIeqtn("alewifeJuv", c("SIV1" = NA, "SIV2" = NA, "SIV3" = 0, "SIV4" = 1, "SIV5" = 1), HSImetadata) # should result in 0.00
 #'
 #' #Compute patch quality for Cutthroat trout model for lacustrine habitats (7 components)
 #' #with spawning and lacustrine habitat and with only lacustrine habitat (i.e., 
@@ -60,38 +59,70 @@
 #' #the late growing season, average velocity over spawning areas, average size 
 #' #of substrate in spawning areas, annual maximal or minimal pH, and percent fines
 #' #in the spawning area.
-#' #Example suitability vectors are c(1,1,1,1,1,1,1), c(0.5,1,0.5,0,1,1,1) and c(1,NA,0.5,NA,NA,0.5,NA)
-#' #c(1,1,1,1,1,1,1) should result in 1
-#' HSIeqtn("cutthroatLacGenLtoe15C", c(1,1,1,1,1,1,1), HSImetadata) 
-#' #c(0.5,1,0.5,0,1,1,1) should result in 0
-#' HSIeqtn("cutthroatLacGenLtoe15C", c(0.5,1,0.5,0,1,1,1), HSImetadata) 
-#' #c(1,NA,0.5,NA,NA,0.5,NA) should result in 0.63
-#' HSIeqtn("cutthroatLacGenLtoe15C", c(1,NA,0.5,NA,NA,0.5,NA), HSImetadata, exclude=c("CE")) 
+#' #should result in 1
+#' HSIeqtn("cutthroatLacGenLtoe15C", c("SIV1" = 1, "SIV2" = 1, "SIV3" = 1, 
+#'                                     "SIV5" = 1, "SIV7" = 1, "SIV13" = 1, 
+#'                                     "SIV16" = 1), HSImetadata) 
+#'                                     
+#' #should result in 0
+#' HSIeqtn("cutthroatLacGenLtoe15C", c("SIV1" = 0.5, "SIV2" = 1, "SIV3" = 0.5, 
+#'                                     "SIV5" = 0, "SIV7" = 1, "SIV13" = 1, 
+#'                                     "SIV16" = 1), HSImetadata) 
+#'                                     
+#' #should result in 0.63
+#' HSIeqtn("cutthroatLacGenLtoe15C", c("SIV1" = 1, "SIV2" = NA, "SIV3" = 0.5, 
+#'                                     "SIV5" = NA, "SIV7" = NA, "SIV13" = 0.5, 
+#'                                     "SIV16" = NA), HSImetadata, exclude=c("CE")) 
 #'
 #' @export
 HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
   
-  # Convert SIV to vector
-  SIV = unlist(SIV)
-  
-  # Remove excluded NA inputs before length check and evaluation
-  SIV <- SIV[!is.na(SIV)]
-  
-  # Test whether SIV inputs are valid
-  if (any(is.infinite(SIV) | !is.numeric(SIV))) {
-    stop("Non-NA SIV inputs must be finite numeric values.")
-  }
-  
-  # Test whether SIV inputs are between zero and one
-  if (any(SIV < 0 | SIV > 1, na.rm = TRUE)) {
-    stop("Suitability index values (SIVs) must be between 0 and 1.", call. = FALSE)
-  }
+  # Convert SIV to a simple named vector
+  SIV <- unlist(SIV, use.names = TRUE)
   
   # Find the location of the model in HSImetadata
   model.loc <- which(HSImetadata$model == HSImodelname)
   
-  # Isolate input variables and assign generic naming
+  if(length(model.loc) == 0){
+    stop("HSImodelname was not found in HSImetadata.", call. = FALSE)
+  }
+  
+  # Test whether the user inputted a named vector
+  if (is.null(names(SIV))) {
+    stop("SIV must be a named vector, matrix, or data frame (e.g., c('SIV1' = 1, 'SIV2' = 1, 'SIV3' = 1))")
+  }
+  
+  # Independently identify which input variables occur in the model
   SIV.name.gen <- names(which(colSums(!is.na(HSImetadata[model.loc,9:40])) > 0))
+  
+  # If user inputs don't exactly match model inputs, remove unused vars and report warning
+  if (!identical(names(SIV), SIV.name.gen)) {
+    removed = names(SIV)[!(names(SIV) %in% SIV.name.gen)]
+    SIV = SIV[SIV.name.gen]
+    warning(paste0(
+      "The following variables were removed from the HSI calculation: ",
+      paste(removed, collapse = ", ")
+    ), call. = FALSE)
+  }
+  
+  # Test whether SIV inputs are numeric and finite
+  SIV.num <- suppressWarnings(as.numeric(SIV))
+  
+  if(any(is.na(SIV.num) & !is.na(SIV))){
+    stop("Non-NA SIV inputs must be numeric values.", call. = FALSE)
+  }
+  
+  if(any(is.infinite(SIV.num[!is.na(SIV.num)]))){
+    stop("Non-NA SIV inputs must be finite numeric values.", call. = FALSE)
+  }
+  
+  SIV <- SIV.num
+  
+  # Test whether SIV inputs are between zero and one
+  if(any(SIV < 0 | SIV > 1, na.rm = TRUE)){
+    stop("Suitability index values (SIVs) must be between 0 and 1.", call. = FALSE)
+  }
+
   
   # Set names for outputs
   var.name <- c(SIV.name.gen, "CF", "CRF", "CRN","CC","CCRO","CCRF","CCF",
@@ -158,8 +189,8 @@ HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
     }
   }
   
-  # Populate the list with input suitability index values
-  for(i in 1:length(SIV)){HSI[[i]] <- SIV[i]}
+  # Match SIV name to column in HSI and add SIV value
+  HSI[SIV.name.gen] <- as.list(SIV)
   
   # Create a list for outputs with the same structure and headings
   HSI.out <- HSI
