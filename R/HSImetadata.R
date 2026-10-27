@@ -65,10 +65,12 @@
 #'   \item{CCN}{Cover nesting component}
 #'   \item{CP}{Pair habitat component}
 #'   \item{CWQ}{Water quality component}
+#'   \item{CWWQ}{Winter water quality component}
 #'   \item{CR}{Reproduction component}
 #'   \item{CCR}{Cover reproduction component}
 #'   \item{CD}{Disturbance component}
 #'   \item{COT}{Other component}
+#'   \item{CWOT}{Winter other component}
 #'   \item{CL}{Larval component}
 #'   \item{CEL}{Embryo and larval component}
 #'   \item{CE}{Embryo component}
