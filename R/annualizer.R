@@ -6,7 +6,10 @@
 #' @param benefits a numeric vector, matrix, or data frame of ecological output 
 #' values for a single condition (e.g., future with project) to be interpolated.
 #'
-#' @return A time-averaged value over the specified time horizon.
+#' @return A time-averaged value over the specified time horizon. Outputs are 
+#' displayed with two decimal places, but returned numeric values retain full 
+#' precision for subsequent calculations. Users should consider the appropriate 
+#' number of significant digits to retain when reporting results.
 #'
 #' @references
 #' Robinson R., Hansen W., and Orth K. 1995. Evaluation of environmental investments
@@ -80,5 +83,6 @@ annualizer <- function(timevec, benefits){
   benefits.avgann <- sum(area.rec + area.tri) / (max(timevec) - min (timevec))
 
   # Return annualized outcomes
-  return(benefits.avgann)
+  cat(sprintf("%.2f\n", benefits.avgann))
+  return(invisible(benefits.avgann))
 }
