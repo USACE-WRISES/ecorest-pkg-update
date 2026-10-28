@@ -16,7 +16,10 @@
 #' @param CE a numeric vector, matrix, or data frame of 0's and 1's indicating whether a plan is cost-effective (1)
 #'   or non-cost-effective (0). Can be derived from ecorest::CEfinder.
 #'
-#' @return A list with summaries of all restoration actions as well as best buy plans only.
+#' @return A list with summaries of all restoration actions as well as best buy plans only. 
+#' Outputs are displayed with two decimal places, but returned numeric values retain 
+#' full precision for subsequent calculations. Users should consider the appropriate 
+#' number of significant digits to retain when reporting results.
 #'
 #' @references
 #' Robinson R., Hansen W., and Orth K. 1995. Evaluation of environmental investments
@@ -91,7 +94,17 @@ BBfinder <- function(benefit, cost, CE){
     BB.out[[2]] <- cbind(benefit[idx], cost[idx], 0)
     colnames(BB.out[[2]]) <- c("benefit", "cost", "inccost")
     
-    return(BB.out)
+    BB.display <- lapply(BB.out, function(mat) {
+      matrix(
+        sprintf("%.2f", as.numeric(mat)),
+        nrow = nrow(mat),
+        ncol = ncol(mat),
+        dimnames = dimnames(mat)
+      )
+    })
+    
+    print(BB.display, quote = FALSE)
+    return(invisible(BB.out))
   }
   # Rank order cost-effective actions based on cost
   ben.CE2 <- ben.CE[order(cost.CE)]
@@ -126,7 +139,18 @@ BBfinder <- function(benefit, cost, CE){
     colnames(BB.out[[1]]) <- c("benefit", "cost", "CE", "BB")
     BB.out[[2]] <- cbind(benefit[idx], cost[idx], 0)
     colnames(BB.out[[2]]) <- c("benefit", "cost", "inccost")
-    return(BB.out)
+    
+    BB.display <- lapply(BB.out, function(mat) {
+      matrix(
+        sprintf("%.2f", as.numeric(mat)),
+        nrow = nrow(mat),
+        ncol = ncol(mat),
+        dimnames = dimnames(mat)
+      )
+    })
+    
+    print(BB.display, quote = FALSE)
+    return(invisible(BB.out))
   }
   
   # Identify the lowest cost, cost-effective plan as the first "best buy"
@@ -169,5 +193,15 @@ BBfinder <- function(benefit, cost, CE){
   colnames(BB.out[[2]]) <- c("benefit", "cost", "inccost")
   
   # Return best buy status of each restoration action
-  return(BB.out)
+  BB.display <- lapply(BB.out, function(mat) {
+    matrix(
+      sprintf("%.2f", as.numeric(mat)),
+      nrow = nrow(mat),
+      ncol = ncol(mat),
+      dimnames = dimnames(mat)
+    )
+  })
+  
+  print(BB.display, quote = FALSE)
+  return(invisible(BB.out))
 }
