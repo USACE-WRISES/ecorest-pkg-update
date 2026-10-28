@@ -18,7 +18,10 @@
 #' from calculations. Non-NULL 'exclude' inputs are only applicable to models that explicitly
 #' provide instructions for use in the note column of HSImetadata.
 #'
-#' @return A numeric value between zero and one representing the composite habitat suitability index score.
+#' @return A numeric value between zero and one representing the composite habitat suitability index score. 
+#' Outputs are displayed with two decimal places, but returned numeric values retain full precision for 
+#' subsequent calculations. Users should consider the appropriate number of significant digits to retain 
+#' when reporting results.
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
@@ -263,6 +266,7 @@ HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
     HSI.out4 <- HSI.out3$Eqtn
   }
   
-  # Return HSI outcome
-  return(HSI.out4)
+  # Return HSI outcome: display two decimal places, retain full precision
+  cat(sprintf("%.2f\n", HSI.out4))
+  return(invisible(HSI.out4))
 }
