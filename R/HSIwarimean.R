@@ -10,6 +10,9 @@
 #' @param w is a vector, matrix, or data frame of weights ranging from 0 to 1 that must sum to one.
 #'
 #' @return A value of habitat quality ranging from 0 to 1 (ignoring NA values).
+#' Outputs are displayed with two decimal places, but returned numeric values retain 
+#' full precision for subsequent calculations. Users should consider the appropriate 
+#' number of significant digits to retain when reporting results.
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
@@ -77,5 +80,7 @@ HSIwarimean <- function(x, w){
     stop("Habitat suitability index is not numeric or is not within 0 to 1 range.", call. = FALSE)
   }
   
-  return(wmean)
+  # Return HSI outcome: display two decimal places but retain full precision
+  cat(sprintf("%.2f\n", wmean))
+  return(invisible(wmean))
 }
