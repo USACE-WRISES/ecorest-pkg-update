@@ -16,7 +16,10 @@
 #' @param ... optional arguments to HSIfunc.
 #'
 #' @return A vector of habitat quality, habitat quantity, and index
-#'   units (quantity times quality).
+#'   units (quantity times quality). Outputs are displayed with two decimal places, 
+#'   but returned numeric values retain full precision for subsequent calculations. 
+#'   Users should consider the appropriate number of significant digits to retain when 
+#'   reporting results.
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
@@ -72,10 +75,24 @@ HUcalc <- function(SI.out, habitat.quantity, HSIfunc,...){
   } 
   
   # Compute outputs
-  HU.out$Quality <- HSIfunc(SI.out,...)
+  quality <- NULL
+  # Prevent output from other function from printing
+  invisible(capture.output(
+    quality <- HSIfunc(SI.out, ...)
+  ))
+  
+  HU.out$Quality <- quality
   HU.out$Quantity <- habitat.quantity
   HU.out$IndexUnits <- HU.out$Quality * HU.out$Quantity
   
   # Return habitat summary
-  return(HU.out)
+  # Display values to two decimal places without changing stored values
+  HU.display <- as.data.frame(lapply(HU.out, function(x) {
+    sprintf("%.2f", x)
+  }))
+  
+  print(HU.display, row.names = FALSE)
+  
+  # Return the original full-precision numeric data frame
+  return(invisible(HU.out))
 }
