@@ -81,6 +81,13 @@
 #'
 #' @export
 SIcalc <- function(SI, input.proj){
+  
+  # If any factors are entered, convert to character before unlisting
+  if (is.data.frame(input.proj) || is.list(input.proj)) {
+    input.proj[vapply(input.proj, is.factor, logical(1))] <-
+      lapply(input.proj[vapply(input.proj, is.factor, logical(1))], as.character)
+  }
+  
   #Standardize user input to a simple unnamed vector
   #This allows the function to work whether input.proj is vector or one row data frame
   input.proj <- unlist(input.proj, use.names = FALSE)
@@ -201,6 +208,6 @@ SIcalc <- function(SI, input.proj){
   }
   
   # Return HSI outcome: display two decimal places, retain full precision
-  cat(sprintf("%.2f\n", SI.out))
+  writeLines(sprintf("%s: %.2f\n", names(SI.out), SI.out))
   return(invisible(SI.out))
 }
