@@ -14,7 +14,10 @@
 #'   parameters associated with the suitability curve data from SI. Note that users should 
 #'   enter NA for excluded variables in HSImodels.
 #'
-#' @return A named vector of suitability index values ranging from 0 to 1 that match given user inputs.
+#' @return A named vector of suitability index values ranging from 0 to 1 that match 
+#' given user inputs. Outputs are displayed with two decimal places, but returned 
+#' numeric values retain full precision for subsequent calculations. Users should 
+#' consider the appropriate number of significant digits to retain when reporting results.
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
@@ -196,5 +199,8 @@ SIcalc <- function(SI, input.proj){
       call. = FALSE
     )
   }
-  return(SI.out)
+  
+  # Return HSI outcome: display two decimal places, retain full precision
+  cat(sprintf("%.2f\n", SI.out))
+  return(invisible(SI.out))
 }
