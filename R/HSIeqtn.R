@@ -18,7 +18,10 @@
 #' from calculations. Non-NULL 'exclude' inputs are only applicable to models that explicitly
 #' provide instructions for use in the note column of HSImetadata.
 #'
-#' @return A numeric value between zero and one representing the composite habitat suitability index score.
+#' @return A numeric value between zero and one representing the composite habitat suitability index score. 
+#' Outputs are displayed with two decimal places, but returned numeric values retain full precision for 
+#' subsequent calculations. Users should consider the appropriate number of significant digits to retain 
+#' when reporting results.
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
@@ -127,7 +130,7 @@ HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
   # Set names for outputs
   var.name <- c(SIV.name.gen, "CF", "CRF", "CRN","CC","CCRO","CCRF","CCF",
                 "CCSF","CCHF","CWF","CSF","CFF","CW","CCB","CB","CN","CNBC",
-                "CCN","CP","CWQ","CR","CCR","CD","COT","CL","CEL","CE",
+                "CCN","CP","CWQ", "CWWQ","CR","CCR","CD","COT", "CWOT","CL","CEL","CE",
                 "CJ","CFr","CS","CA","CI","CIN","CNI","CWFC","CFBS","CFSWF",
                 "CSPF","CWC","CCFS","CSS","CT","CTe","CJA","Eqtn")
   
@@ -156,10 +159,12 @@ HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
   HSI$CCN <- parse(text=paste(HSImetadata$CCN[model.loc]))
   HSI$CP <- parse(text=paste(HSImetadata$CP[model.loc]))
   HSI$CWQ <- parse(text=paste(HSImetadata$CWQ[model.loc]))
+  HSI$CWWQ <- parse(text=paste(HSImetadata$CWWQ[model.loc]))
   HSI$CR <- parse(text=paste(HSImetadata$CR[model.loc]))
   HSI$CCR <- parse(text=paste(HSImetadata$CCR[model.loc]))
   HSI$CD <- parse(text=paste(HSImetadata$CD[model.loc]))
   HSI$COT <- parse(text=paste(HSImetadata$COT[model.loc]))
+  HSI$CWOT <- parse(text=paste(HSImetadata$CWOT[model.loc]))
   HSI$CL <- parse(text=paste(HSImetadata$CL[model.loc]))
   HSI$CEL <- parse(text=paste(HSImetadata$CEL[model.loc]))
   HSI$CE <- parse(text=paste(HSImetadata$CE[model.loc]))
@@ -217,33 +222,35 @@ HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
   HSI.out[[j+18]] <- with(HSI,eval(HSI$CCN))
   HSI.out[[j+19]] <- with(HSI,eval(HSI$CP))
   HSI.out[[j+20]] <- with(HSI,eval(HSI$CWQ))
-  HSI.out[[j+21]] <- with(HSI,eval(HSI$CR))
-  HSI.out[[j+22]] <- with(HSI,eval(HSI$CCR))
-  HSI.out[[j+23]] <- with(HSI,eval(HSI$CD))
-  HSI.out[[j+24]] <- with(HSI,eval(HSI$COT))
-  HSI.out[[j+25]] <- with(HSI,eval(HSI$CL))
-  HSI.out[[j+26]] <- with(HSI,eval(HSI$CEL))
-  HSI.out[[j+27]] <- with(HSI,eval(HSI$CE))
-  HSI.out[[j+28]] <- with(HSI,eval(HSI$CJ))
-  HSI.out[[j+29]] <- with(HSI,eval(HSI$CFr))
-  HSI.out[[j+30]] <- with(HSI,eval(HSI$CS))
-  HSI.out[[j+31]] <- with(HSI,eval(HSI$CA))
-  HSI.out[[j+32]] <- with(HSI,eval(HSI$CI))
-  HSI.out[[j+33]] <- with(HSI,eval(HSI$CIN))
-  HSI.out[[j+34]] <- with(HSI,eval(HSI$CNI))
-  HSI.out[[j+35]] <- with(HSI,eval(HSI$CWFC))
-  HSI.out[[j+36]] <- with(HSI,eval(HSI$CFBS))
-  HSI.out[[j+37]] <- with(HSI,eval(HSI$CFSWF))
-  HSI.out[[j+38]] <- with(HSI,eval(HSI$CSPF))
-  HSI.out[[j+39]] <- with(HSI,eval(HSI$CWC))
-  HSI.out[[j+40]] <- with(HSI,eval(HSI$CCFS))
-  HSI.out[[j+41]] <- with(HSI,eval(HSI$CSS))
-  HSI.out[[j+42]] <- with(HSI,eval(HSI$CT))
-  HSI.out[[j+43]] <- with(HSI,eval(HSI$CTe))
-  HSI.out[[j+44]] <- with(HSI,eval(HSI$CJA))
+  HSI.out[[j+21]] <- with(HSI,eval(HSI$CWWQ))
+  HSI.out[[j+22]] <- with(HSI,eval(HSI$CR))
+  HSI.out[[j+23]] <- with(HSI,eval(HSI$CCR))
+  HSI.out[[j+24]] <- with(HSI,eval(HSI$CD))
+  HSI.out[[j+25]] <- with(HSI,eval(HSI$COT))
+  HSI.out[[j+26]] <- with(HSI,eval(HSI$CWOT))
+  HSI.out[[j+27]] <- with(HSI,eval(HSI$CL))
+  HSI.out[[j+28]] <- with(HSI,eval(HSI$CEL))
+  HSI.out[[j+29]] <- with(HSI,eval(HSI$CE))
+  HSI.out[[j+30]] <- with(HSI,eval(HSI$CJ))
+  HSI.out[[j+31]] <- with(HSI,eval(HSI$CFr))
+  HSI.out[[j+32]] <- with(HSI,eval(HSI$CS))
+  HSI.out[[j+33]] <- with(HSI,eval(HSI$CA))
+  HSI.out[[j+34]] <- with(HSI,eval(HSI$CI))
+  HSI.out[[j+35]] <- with(HSI,eval(HSI$CIN))
+  HSI.out[[j+36]] <- with(HSI,eval(HSI$CNI))
+  HSI.out[[j+37]] <- with(HSI,eval(HSI$CWFC))
+  HSI.out[[j+38]] <- with(HSI,eval(HSI$CFBS))
+  HSI.out[[j+39]] <- with(HSI,eval(HSI$CFSWF))
+  HSI.out[[j+40]] <- with(HSI,eval(HSI$CSPF))
+  HSI.out[[j+41]] <- with(HSI,eval(HSI$CWC))
+  HSI.out[[j+42]] <- with(HSI,eval(HSI$CCFS))
+  HSI.out[[j+43]] <- with(HSI,eval(HSI$CSS))
+  HSI.out[[j+44]] <- with(HSI,eval(HSI$CT))
+  HSI.out[[j+45]] <- with(HSI,eval(HSI$CTe))
+  HSI.out[[j+46]] <- with(HSI,eval(HSI$CJA))
   
   # Evaluate the overall HSI equation
-  HSI.out[[j+45]] <- with(HSI.out,eval(HSI.out$Eqtn))
+  HSI.out[[j+47]] <- with(HSI.out,eval(HSI.out$Eqtn))
   
   # Remove unused components and reclassify as a data frame
   HSI.out2 <- HSI.out[which(!is.na(HSI.out))]
@@ -259,6 +266,7 @@ HSIeqtn <- function(HSImodelname, SIV, HSImetadata,exclude=NULL){
     HSI.out4 <- HSI.out3$Eqtn
   }
   
-  # Return HSI outcome
-  return(HSI.out4)
+  # Return HSI outcome: display two decimal places, retain full precision
+  cat(sprintf("%.2f\n", HSI.out4))
+  return(invisible(HSI.out4))
 }
