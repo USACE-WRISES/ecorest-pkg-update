@@ -8,7 +8,10 @@
 #'
 #' @param x a vector, matrix, or data frame of suitability indices with values ranging from 0 to 1.
 #'
-#' @return A value of habitat quality ranging from 0 to 1 (ignoring NA values).
+#' @return A value of habitat quality ranging from 0 to 1 (ignoring NA values). 
+#' Outputs are displayed with two decimal places, but returned numeric values retain 
+#' full precision for subsequent calculations. Users should consider the appropriate 
+#' number of significant digits to retain when reporting results.
 #'
 #' @references
 #' US Fish and Wildlife Service. (1980). Habitat as a basis for environmental assessment.
@@ -57,8 +60,9 @@ HSIarimean <- function(x){
   } else {
     HSIout <- HSI
   }
-  # Return HSI outcome
-  return(HSIout)
+  # Return HSI outcome: display two decimal places, retain full precision
+  cat(sprintf("%.2f\n", HSIout))
+  return(invisible(HSIout))
 }
 
 
