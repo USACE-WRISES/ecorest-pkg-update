@@ -11,8 +11,12 @@
 #'   associated suitability indices for each parameter. Suitability curves that contain
 #'   both continuous and categorical variables should be formatted as a dataframe rather than a matrix.
 #' @param input.proj numeric or categorical vector of application-specific input
-#'   parameters associated with the suitability curve data from SI. Note that users should 
-#'   enter NA for excluded variables in HSImodels.
+#'   parameters associated with the suitability curve data from SI. Categorical
+#'   inputs are denoted with lowercase letters and should be entered in quotations 
+#'   (e.g., "a", "b"). Users may need to review the model documentation to determine the 
+#'   appropriate category. Model-specific curves can be viewed with the print function 
+#'   (e.g., print(HSImodels$alewifeJuvAndSAEL)). Note that users should enter NA 
+#'   for excluded variables in HSImodels.
 #'
 #' @return A named vector of suitability index values ranging from 0 to 1 that match 
 #' given user inputs. Outputs are displayed with two decimal places, but returned 
