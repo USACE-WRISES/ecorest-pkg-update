@@ -15,8 +15,8 @@
 #'   inputs are denoted with lowercase letters and should be entered in quotations 
 #'   (e.g., "a", "b"). Users may need to review the model documentation to determine the 
 #'   appropriate category. Model-specific curves can be viewed with the print function 
-#'   (e.g., print(HSImodels$alewifeJuvAndSAEL)). Note that users should enter NA 
-#'   for excluded variables in HSImodels.
+#'   (e.g., print(HSImodels$alewifeJuvAndSAEL)). Note that users can enter NA 
+#'   for excluded variables in HSImodels, but this is not a requirement.
 #'
 #' @return A named vector of suitability index values ranging from 0 to 1 that match 
 #' given user inputs. Outputs are displayed with two decimal places, but returned 
@@ -71,17 +71,21 @@
 #'
 #' 
 #' #Import juvenile Alewife suitability curves with HSImodels$alewifeJuv
-#' #Demonstrate how to enter NA for excluded variables in HSImodels
+#' #Demonstrate inclusion and exclusion of NA for excluded variables in HSImodels
 #' #Pardue, GB. 1983. Habitat suitability index models: alewife and blueback herring. 
 #' #U.S. Dept. Int. Fish Wildl. Serv. FWS/OBS-82/10.58. 22pp.
 #' 
-#' #Set user variables that should return (NA, NA, 1, 1, 0)
+#' #Set user variables that should return (1, 1, 0)
 #' input.demo4 <- c(NA, NA, 125, 5, 5)
 #' SIcalc(HSImodels$alewifeJuv, input.demo4)
 #' 
-#' #Demonstrate use with out of range continuous inputs
-#' input.demo5 <- c(NA, NA, 140, 5, 5)
+#' #Demonstrate use without NA inputs (should return 1, 1, 0)
+#' input.demo5 <- c(125, 5, 5)
 #' SIcalc(HSImodels$alewifeJuv, input.demo5)
+#' 
+#' #Demonstrate use with out of range continuous inputs (should return 1, 1, 0 with a warning)
+#' input.demo6 <- c(140, 5, 5)
+#' SIcalc(HSImodels$alewifeJuv, input.demo6)
 #'
 #' @export
 SIcalc <- function(SI, input.proj){
@@ -92,24 +96,70 @@ SIcalc <- function(SI, input.proj){
       lapply(input.proj[vapply(input.proj, is.factor, logical(1))], as.character)
   }
   
-  #Standardize user input to a simple unnamed vector
-  #This allows the function to work whether input.proj is vector or one row data frame
-  input.proj <- unlist(input.proj, use.names = FALSE)
+  # Standardize user input to a simple unnamed vector
+  # This allows the function to work whether input.proj is vector or one row data frame
+  input.proj <- unlist(input.proj, use.names = TRUE)
   
-  warning(
-    "U.S. Army Corps of Engineers users must have approval from the National Ecosystem Planning Center of Expertise (Eco-PCX) prior to application of a new model.",
-    call. = FALSE
-  )
+  # Store original SI structure
+  og_SI = SI
   
-  #Number of variables in the suitability index model
+  # Store user-input names if they exist
+  og_names = names(input.proj)
+  
+  # Number of variables in HSImodels, including NA variables
   nSI <- ncol(SI) / 2
   
+  # Number of non-NA variables in HSImodels
+  non_NA_SI <- sum(colSums(!is.na(SI)) > 0) / 2
+  
   # Stop if number of inputs does not match number of SI variables.
-  if(length(input.proj) != nSI){
+  if(length(input.proj) != nSI & length(input.proj) != non_NA_SI) {
     stop("Number of inputs does not equal number of SI values.", call. = FALSE)
+  } else if(length(input.proj) == nSI & length(input.proj) != non_NA_SI) {
+    # If NAs are included in the input, assign a value in input.proj to every variable column in HSImodels
+    names(input.proj) = names(SI)[seq(2, ncol(SI), by = 2)]
+    
+    # Find all columns in SI where every row is NA
+    all_na_cols <- names(SI)[vapply(SI, function(x) all(is.na(x)), logical(1))]
+    
+    # Remove NA columns from SI
+    SI <- SI[!(names(SI) %in% all_na_cols)]
+    
+    # Delete any NA inputs where the data in SI is all NA
+    remove_idx <- names(input.proj) %in% all_na_cols # Store position of values that will be removed
+    input.proj <- input.proj[!(names(input.proj) %in% all_na_cols)] # Remove values
+    
+    # If the user input names, remove the names corresponding to the removed parameters
+    if (!is.null(og_names)) {
+      og_names <- og_names[!remove_idx]
+    }
+    
+    # Count number of NAs removed
+    na_num = nSI - non_NA_SI
+    
+    if (na_num == 1) {
+      message(
+        paste0(na_num),
+        " parameter entered as NA and not found in SI was removed from calculations.\n"
+      )
+    } else {
+      message(
+        paste0(na_num),
+        " parameters entered as NA and not found in SI were removed from calculations.\n"
+      )
+    }
+    
+    
+  } else if (length(input.proj) == non_NA_SI & length(input.proj) != nSI) {
+    
+    # Find all columns in SI where every row is NA
+    all_na_cols <- names(SI)[vapply(SI, function(x) all(is.na(x)), logical(1))]
+    
+    # Remove NA columns from SI
+    SI <- SI[!(names(SI) %in% all_na_cols)]
   }
   
-  #Check that all suitability indices in SI are between 0 and 1
+  # Check that all suitability indices in SI are between 0 and 1
   even_cols <- seq(2, ncol(SI), by = 2)
   if(any(SI[, even_cols] < 0 | SI[, even_cols] > 1, na.rm = TRUE)){
     stop("Suitability index values in SI must be between 0 and 1.", call. = FALSE)
@@ -120,10 +170,11 @@ SIcalc <- function(SI, input.proj){
     stop("input.proj contains infinite values (Inf or -Inf), which are not allowed.", call. = FALSE)
   }
   # Pre-allocate output.
-  SI.out <- rep(NA_real_, nSI)
+  SI.out <- rep(NA_real_, non_NA_SI)
   capped_any <- FALSE
+  
   # Loop over variables.
-  for(i in 1:nSI){
+  for(i in 1:non_NA_SI){
     
     # Breakpoint/class column and associated SIV column.
     xcol <- SI[,2*i - 1]
@@ -201,8 +252,52 @@ SIcalc <- function(SI, input.proj){
       SI.out[i] <- suppressWarnings(as.numeric(as.character(ycol[idx[1]])))
     }
   }
-  # Name output by SIV position
-  names(SI.out) <- paste0("SIV", seq_len(nSI))
+
+  # Determine whether SI is a blue book model stored in HSImodels and HSImetdata
+  if (any(vapply(HSImodels, identical, logical(1), y = og_SI))) {
+    # If true, pull SIV names based on column names in SI
+    model = names(which(vapply(HSImodels, identical, logical(1), y = og_SI))) # Pull name of target model
+    model_info = HSImetadata[which(HSImetadata$model == model[1]),9:40, drop = FALSE] # Store the model's SIV metadata
+    SIV_names = names(HSImetadata)[9:40][model_info %in% names(og_SI)] # Store names of SIVs
+    names(SI.out) = SIV_names # Set SIV names as the names of input.proj
+    
+    if (!is.null(og_names) & !identical(og_names, names(SI.out)) & length(model) == 1) {
+      message(
+        "SI was found in HSImodels (",
+        paste(model),
+        "), so parameter names were altered ",
+        "to match HSImetadata for compatibility with HSIeqtn:\n",
+        "User-input parameter names: ", paste(og_names, collapse = ", "), "\n",
+        "Parameter names in HSImetadata: ", paste(names(SI.out), collapse = ", ")
+      )
+    } else if (!is.null(og_names) & !identical(og_names, names(SI.out)) & length(model) == 1) {
+      message(
+        "SI matched several models in HSImodels (",
+        paste(model, collapse = ", "),
+        "), so parameter names were altered ",
+        "to match HSImetadata for compatibility with HSIeqtn:\n",
+        "User-input parameter names: ", paste(og_names, collapse = ", "), "\n",
+        "Parameter names in HSImetadata: ", paste(names(SI.out), collapse = ", ")
+      )
+    } else if (length(model) > 1) {
+      message(
+        "SI matched several models in HSImodels: ",
+        paste(model, collapse = ", ")
+      )
+    }
+  } else {
+    if (!is.null(og_names)) {
+      names(SI.out) <- og_names
+    } else {
+      names(SI.out) <- paste0("SIV", seq_len(non_NA_SI))
+    }
+    
+    warning(
+      "U.S. Army Corps of Engineers users must have approval from the National Ecosystem Planning Center of Expertise (Eco-PCX) prior to application of a new model.",
+      call. = FALSE
+    )
+  }
+  
   
   if(capped_any){
     warning(
